@@ -1,0 +1,215 @@
+"id","contractor_id","business_name","owner","position","address","contact_number","status","created_at","updated_at"
+"1","4","3K Rock Engineering","Francis B. Cuyop","Manager","#110  Andres Bonifacio, Diffun Quirino/Badiwan Poblacion Tuba, Benguet","424 4382/9554130644","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"2","5","Akip Construction and Enterprise","Bobby T. Wayan","Manager","Ad 108-H Poblacion, La Trinidad, Benguet","9222555333/620-2916","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"3","6","ADL General Construction","Delfin A. Alawas","Manager","Kb 65 Samoyao Cruz","9082853575","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"4","7","Alcel Construction","Alexander M. Ang","Manager","Alaminos, Pangasinan",,"active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"5","8","Aip Construction","Arnel I. Peil","Manager","Unit 111-B Egi Albergo Hotel #1 Villamor Drive Brgy, Lualhati, Baguio City","424-6179/483-03-73","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"6","9","Ampsleo Construction","Valentin B. Leo","Manager","LB 06 Rocky Side 1, Lubas, La Trinidad, Benguet","9304063349/09190014535","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"7","10","A.P.B Construction","Armando Baldonado","Manager","#36 North Sto. Tomas Rd., Baguio City","9274875523","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"8","11","Anas Construction","Dionisio L.  Anas","Manager","Monglo, Bayabas, Sablan, Benguet","9502311172","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"9","12","Aroboan Construction And Supply","Roboan B. Alvarez","Manager","Fc 423 Central St., Balili, La Trinidad, Benguet/ Kabayan, Benguet","9089448512","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"10","13","Akiki Builders","Ruben L. Aguinse","Manager","Duacan, Kabayan, Benguet","9289641291","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"11","14","Aljune Builders","Alma G. Domagto","Manager","43 Sabkil, Loacan, Itogon, Benguet","9995766070/09277957587","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"12","15","Anitos Construction","Marty G. Manayos","Manager","Alapang , La Trinidad","9082993533","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"13","16","A. G Chungalan Construction","Amalia G. Chungalan","Manager","Ngibil Poblacion, Bokod","9081683861","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"14","17","Aguinsod General Construction","Christopher A. Aglolo","Manager","Ma Puguis, La Trinidad, Benguet","9987740981","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"15","18","Apaklo Kin Construction And Engineering Services","Domingo M. Suni-En","Manager","Ampusongan, Bakun, Benguet","0949458479/09273830466","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"16","19","Bldy Engineering And Construction","Victor L. Datic Jr","Manager","726 Camp Allen, Baguio City","9078691483","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"17","20","Balangcod Construction","Fermin D. Balangcod","Manager","Gambang, Cuba, Kapangan, Benguet/ JF 01-4 Toyong, Pico, La Trinidad Benguet","9282665747","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"18","21","Balbalin Engineering And Construction","Dorotheo B. Aligo","Manager","Ae 227-C West Buyagan Poblacion, La Trinidad, Benguet","9477261879","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"19","22","Bosongan Construction","Jun Jun E. Wag-E","Manager","Oa-95 Km. 9 Tawang, La Trinidad, Benguet","9296915400","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"20","23","BTCJR Construction And Engineering Services","Bandolin T. Cariño Jr.","Manager","km 73, Junction, Amgaleyguey, Buguias, Benguet/Lubos Compound, km 5 Pico, La Trinidad, Benguet","9192068011/09396433057","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"21","24","Buganheirs Engineering & Construction","Allan Fuchigami","Manager","Pico, La Trinidad,Benguet","9989898114","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"22","25","Bolos Engineering And Construction ","Edgar B. Baclawad","Manager","A72-2 Poblacion, La Trinidad, Benguet","9083133130","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"23","26","Bemada Construction","Beny M. Daliling","Manager","#322 Mangga Tuding, Itogon, Benguet","9194125313","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"24","27","Baldas Construction","Samson B. Benny","Manager","Camanpaguey, Cabiten, Mankayan, Benguet","09122715120","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"25","28","Compass Rose Builders","Daniel T. Sibelius","Manager","Acop, Tublay, Benguet","9209284618","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"26","29","Cliff Construction And Aggregates","Junifer Bosleng","Manager","Ae-131 Buyagan, La Trinidad, Benguet","9285003157","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"27","30","Cps Engineering Construction","Crisanto P. Sagayo Jr.","Manager","Boga, Mohamon Sur, Bauko, Mountain Province","9302590300","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"28","31","Donato-Sakiwat Construction","Jerome Stephen D. Sakiwat","Manager","Tabio, Mankayan, Benguet","9189858759","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"29","32","Drichloui Construction","Roy M. Balay-Odao","Manager","Gambang, Bakun, Benguet","9284045948","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"30","33","Djy Construction","Delia A. Yubos","Manager","#193 Tin Street, Upper Quezon Hill, Baguio City","9399162752","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"31","34","Dmcd Engineering And Construction","Dennis Molintas C. De Ausen","Manager","21b Purok 2, Km3, Asin Road, Baguio City","9308961673","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"32","35","Dipas Builders","Marcial  P.  Mascay","Manager","Pinagayan, Sapid, Mankayan","9396293935","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"33","36","Eugao Construction","Eugenio O. Aglasi","Manager","Palasaan, Mankayan, Benguet","9072481130","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"34","37","Efler Construction And Enterprise","Efler M. Sab-It","Manager","Acop Caponga Tublay Benguet","9985308951","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"35","38","EBTitiwa Gen. Engineering And Construction Services","Eduardo B. Titiwa","Manager","Ac 74 Eastern Buyagan, Poblacion, La Trinidad","09216868510","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"36","39","FMC Warrior's Construction","Federico M. Calinsuay","Manager","JA 328 Peril Pico, La Trinidad, Benguet/Sinacbat, Bakun, Benguet","09093300555","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"37","40","Family Circle Construction","Marcos P. Luma-Ang","Manager","Km. 12 Senly Loy Building, Shilan, La Trinidad, Benguet","9124626700","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"38","41","Four Brothers Construction","Carlito B. Alos","Manager","Batan, Kabayan, Benguet","9199891488","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"39","42","Guardian Construction","Ruben B. Pacheco Jr.","Manager","Ad-021 Central Buyagan, Poblacion, La Trinidad","9089197446","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"40","43","Gacoscos Construction","Ronald Allan Gacoscos","Manager","#16 Laubach Rd., Upper General Luna Baguio City","09174354122/09184817714","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"41","44","Hgw=3 Engineering And Construction","Hilbert B. Willie","Manager","Poblacion, Sablan, Benguet","9083041693","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"42","45","Hdg Construction And Enterprises","Hanivall D. Guilando","Manager","Fd 232 Pines Park, Km. 4, Balili, La Trinidad, Benguet","0999-925-8238","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"43","46","Haight's Construction","Noel G. Haight","Manager","218-A Dapiting, Alapang, La Trinidad, Benguet/ km 6 Dangwa Square, La Trinidad, Benguet","9468179021","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"44","47","Hillbrand Engineering","Hildobrando S. Beray","Manager","MD 192 Balite, Longlong, Puguis, La Trinidad","9475342075/074-620-5953","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"45","48","Ico Construction Services","Jerico A. Palangdan","Manager","Tuding, Itogon, Benguet","9088206429","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"46","49","Juricmarc ","Corazon G. Pago","Manager","Bekes, Taneg Mankayan","9102938868","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"47","50","Jamil Sean Construction","Barmino T. Bugnay","Manager","Pa 295 A, Wangal, La Trinidad, Benguet","9202118300","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"48","51","Jca General Construction And Eng'g Services","Joel C. Adian","Manager","Buhaw, Puguis, La Trinidad, Benguet","9297258644","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"49","52","Jomarcann Gen. Construction","Joselito O. Tan","Manager","No. 1 Lower Q.M Subdivision, Baguio City","9095478526","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"50","53","JYP General Construction","Yonie S. Palonan","Manager","AD 132-B Cental Buyagan, La Trinidad, Benguet","9185806990\09635111393","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"51","54","Kuatako Construction & General Contractor","Harry L. Ciriaco Sr.","Manager","Ap-066 Ambiong, La Trinidad, Benguet","9089043440","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"52","55","Kalahan Construction And Supplies","CASIO G. Paris Jr.","Manager","MA-17, PUGUIS, La Trinidad, Benguet/ IB-82, BETAG LTB","9476007980/09277783715/074-424-7389","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"53","56","KVC Construction","Victorino M. Balaodan","Manager","Pa 399-D Upper Wangal, La Trinidad, Benguet","9509499005","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"54","57","Lincee General Construction And General Merchandise","Jeremy B. Darcio","Manager","Acop, Caponga, Tublay, Benguet","9082018754","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"55","58","Mk Construction","Francis V. Kaniteng","Manager","876 Midas, Ucab, Itogon, Benguet","9397304695/09618146052/09460157277","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"56","59","Macgat Construction","Macreson L. Gatab","Manager","Bad-Ayan, Baculongan Sur, Buguias, Benguet","09291874465 / 09097744019","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"57","60","Malco Construction","Malote S. Copite","Manager","Taneg, Mankayan/ IA 96, Betag, La Trinidad, Benguet","9999835008","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"58","61","Mandiit Construction Services","Felicito G. Bang-Ngit","Manager","PA-004b Upper Wangal, La Trinidad, Benguet","9121300491/09502032269","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"59","62","Nair Construction And Engineering","Andrew L. Bagano","Manager","Central Poblacio, Bakun, Benguet","90720587047","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"60","63","N-J Constructionz","Nestor G. Sanchez","Manager","Poblacion, Ambaguio, Nueva Vizcaya","09296715522 / 09164948997 / 09503200960","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"61","64","On Top Construction","Thomas Palileng","Manager","Km. 90 Halsema Hingway, Buguias, Benguet","9185332348","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"62","65","Organic Construction And Aggregates","Jeb C. Constancio","Manager","La-54 Lubas Km. 4 La Trinidad, Benguet","0999-3976-058","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"63","66","Potpotan General Construction","Loradel P. Lim","Manager","Buyacaoan, Buguias, Benguet","9218503099","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"64","67","Pulicay Grandson's Construction","Reynaldo P. Monte","Manager","Ampusongan, Bakun, Benguet","9106119888","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"65","68","P.G Velasco Construction","Pio G. Velasco","Manager","No. 79 Upper Diego Silang St., Baguio City","9064125137","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"66","69","Precious Gold Builders","Richard O Liis","Manager","Madaymen, Kibungan, Benguet/ Rm. #E, 3f Bsu Mpc Bldg., Balili, Ltb/","9399162750","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"67","70","Quegues Builders And Enterprises","Remy J. Kigis","Manager","# 064 SAMOYAO, AMPUCAO, ITOGON, BENGUET","9106895477/09184294905","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"68","71","Reasons Construction And Supplies","Epie G. Abalos","Manager","JC-259 Pico, La Trinidad, Benguet","9294991892","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"69","72","Reko General Konstruct","Aurelio S. Galangco","Manager","#18 Dominican Hill Extension, 2600 Baguio City","09089834799/422-2271","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"70","73","RNNA BUILDERS","Roy K. Kepes","Manager","103-E North Sanitary Camp, Baguio City","422-9549/09209175939","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"71","74","Remnant Builders","Julio O. Liis","Manager","Km 12, Shilan La Trinidad, Benguet","0928-555-5155","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"72","75","Sapdoy Enterprises","William W. Sapdoy","Manager","#178 Poblacion, Tuba, Benguet/Sitio Bridal, Kennon road, Camp 1 Tuba, Benguet","9475200584/09081381751/09060791455","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"73","76","Sangin General Construction","Sandy L. Rafael","Manager","LE 8, Pipingew, Lubas, La Trinidad, Benguet/Pinehill Building, km 5, La Trinidad, Benguet","9192998616","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"74","77","Summerlin Construction And Development Corporation","Anton M. Abyado","Manager","Samoyao, Alapang, La Trinidad, Benguet","09302694414 / 09274024179","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"75","79","Sandstream Construction","Cristeta S. Locano","Manager","3rd Floor Solis Building, Pico Road Km 5, La Trinidad, Benguet","9497161568","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"76","80","Sharamalle Construction And General Engineering","Anthony A. Ban-Eg","Manager","Bulalacao,Mankayan, Benguet","9982553392","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"77","81","Srba General Construction","Ray A. Angluben","Manager","Fd 67 Balili, La Trinidad, Benguet",,"active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"78","82","Sff Enterprise","Charlie M.Felix","Manager","Tinongdan, Itogon, Benguet","9464060139","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"79","83","Random Builders","Dominguez F. Alones","Manager","Da 109 Trinivilee Subdivision, Tomay, La Trinidad, Benguet","9399162745","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"80","84","Roben Runas Construction","Roben B. Runas","Manager","008 Upper Poblacion, Tuba, Benguet","9988575534","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"81","85","Solonio Construction","Ritchie T. Solonio","Manager","Gusaran, Kabayan, Benguet","9293643059","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"82","86","Sej Construction And Agrregates","Eric A. De Leon","Manager","Ac-50 Eastern Buyagan, Poblacion, La Trinidad, Benguet","9478213774","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"83","87","Toclo Construction","Elmer S. Toclo","Manager","Atayan, Bauli, Mankayan","9507557381","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"84","88","Universal De Leon","Oliver De Leon","Manager","Ac 147 Eastern Buyagan, Poblacion, La Trinidad, Benguet/Rm 2d 2nd Floor Bsu Coop Alumni Bldg, Betag Km 6, Ltb","09984554077/424-4988","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"85","89","Vanket Engineering And Construction","Frankie T. Diano","Manager","Bokloan, Kapangan, Benguet","9186948021","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"86","90","WDG Construction And Supply","Winson D. Galangco","Manager","18 Interior Road, Extension, Dominican Hill, Mirador, Baguio City","09303490222/422-2271","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"87","91","Ykj-Lhat General Construction","Leonarda T. Decaran","Manager","#279 Purok 1, Loacan, Itogon, Benguet","9996747113/09072949638","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"88","92","Zmc General Construction","Camilo C. Munoz","Manager","Ib 29, Betag, La Trinidad, Benguet","9283787103","active","2020-12-15 08:34:14","2020-12-15 08:34:14"
+"89","94","APP Construction and Supplies","Unknown Owner","Manager","Unknown address","09503279274","active",NULL,NULL
+"90","95","Layad General Engineering Construction & Aggregates","Mike A. Ibag","Manager","MB 222 C Long-long Road, Puguis, La Trinidad, Benguet","09503279274 / 09480459730","active",NULL,NULL
+"91","96","MXC Construction","Marwin Xann C. Cabading","Manager","PA 006 Upper Wangal, La Trinidad, Benguet","09503279274","active",NULL,NULL
+"92","97","EAJR De Leon Construction","Edwardo A. De Leon Jr.","Manager","Unknown Address","09503279274","active",NULL,NULL
+"93","98","CAD-ERA Design and Builder","Raymundo  D. Panopio","Manager","Unknown address","09503279274","active",NULL,NULL
+"94","99","Kidfer Construction","Kidap G. Fernandez","Manager","JC012 Km 4, Pico, La Trinidad, Benguet","09497163110/09502279274","active",NULL,NULL
+"95","100","Xandrix Builders","Aster P. Cadwagan","Manager","Unknown address","09503279274","active",NULL,NULL
+"96","101","Cascon Construction","Leonora M. Torio","Manager","Unknown Address","09503279274","active",NULL,NULL
+"97","102","Boyet Builders","James Palangdan","Manger","Unknown Address","09503279274","active",NULL,NULL
+"98","103","Deyan Construction","Anthony Deyan","Manger","Unknown Address","09503279274","active",NULL,NULL
+"99","104","AG Construction","Alexander A. Galpo","Manager","121 SIAPNO ROAD PACDAL BAGUIO CITY","09503279274","active",NULL,NULL
+"100","105","G. Galpo Construction","Gideon Galpo","Manager","Unknown address","09503279274","active",NULL,NULL
+"101","106","NOR-KAZ Construction","Nora S. Bay-an","Manager","579 Lasong, Tadiangan, Tuba, Benguet","09503279274/09212138318","active",NULL,NULL
+"102","107","One-Ro Construction and Supply","Leonoro C. Joseph","Manager","Uknown address","09503279274","active",NULL,NULL
+"103","108","High Plain Construction","Fidel Guis-o Yubos","Manager","Dada, Bakun, Benguet","09202241701/09503279274","active",NULL,NULL
+"104","109","Fuchigami Construction and Boring Property","Walter T. Fuchigami","Manager","Pico la Trinidad Benguet","09503279274","active",NULL,NULL
+"105","110","Renton Engineering Services","Enrique N. Waldo","Manager","Dalicno, Ampocao, Itogon, Benguet","09474568793/09503279274/09993080675","active",NULL,NULL
+"106","111","QPJ General Engineering Construction and Supply","Joel D. Alimondo","Manager","Swamp Puguis, La Trinidad, Benguet","09503279274/09184159138","active",NULL,NULL
+"107","112","Wacaden Construction","Drassen S. Igualdo","Manager","Poblacion, Buguias, Benguet","09503279274","active",NULL,NULL
+"108","113","Graceron Construction","Ronnie A. Malicdan","Manager","Unknown address","09503279274","active",NULL,NULL
+"109","114","Samantha Enterprises","Unknown Owner","Manager","Unknown address","09503279274","active",NULL,NULL
+"110","115","Skalyndra Construction and Supply","Jenny A. Bangdo","Manager","Naiba Tuding Itogon Benguet","09503279274","active",NULL,NULL
+"111","116","Babecor Builders","Marcos P. Bakoy","Manager","Ampucao Itogon Benguet","09184194602","active",NULL,NULL
+"112","117","JYKABAY General Construction","Jeffrey  P. Bayog","Manager","Abatan, Buguias, Benguet","09503279274","active",NULL,NULL
+"113","118","F.B. Bantales Engineering and Construction / Aroboan Construction and Supply","Roboan B. Alvarez","Manager","Uknown address","Unknown","active",NULL,NULL
+"114","119","ESTAKA Builders","Reynald T. SIbelius","Proprietor","462 Slide Tuding Itogon","09998831735","active",NULL,NULL
+"115","120","Tangayab Construction Services","Danford Doculan Amos","Manager","Proper Loo, Buguias, Benguet","09613754708","active",NULL,NULL
+"116","121","Felher General Construction","Feliciano M. Kipas","Unknown","IB-106 Betag, La Trinidad, Benguet","Unknown","active",NULL,NULL
+"117","122","BGZ Construction Services","Anthony T. Licangan","Manager","AD24-A Buyagan, Poblacion, La Trinidad, Benguet","09399152528","active",NULL,NULL
+"118","123","Pecdasen Builders","Rudy D. Pecdasen","Manager","Lutheran Compound Abatan, Buguias, Benguet","09185232926","active",NULL,NULL
+"119","124","A.L. Sagandoy Construction","Agapito L. Sagandoy","Manager","#1018 Batuang, Virac, Itogon, Benguet","Unknown","active",NULL,NULL
+"120","125","CAMROCK Construction","Wilfred V. Montino","Manager","Nagawa,Ampucao, Itogon, Benguet","09197749062","active",NULL,NULL
+"121","126","Alber and Seven Construction","Almira S. Pacyado","Manager","1354 Lower Skyview, Itogon","09776022575","active",NULL,NULL
+"122","127","Safelink Builders","Ponciano A. Andiso","Manager","Dangwa Square, Km.6, La Trinidad, Benguet/ Poblacion, Bakun, Benguet","Unknown","active",NULL,NULL
+"123","128","CHRISHUA Construction Services","Domingo T. Bugnay","Manager","Ballay, Kabayan, Benguet/PA 295B Upper Wangal, La Trinidad, Benguet","09105314217/09505164803","active",NULL,NULL
+"124","129","Rocky 5g Builders","Oscar M. Dodon","Manager","KD-17 Gumamela Alley, Cruz, La Trinidad, Benguet","09108176747/09097416217","active",NULL,NULL
+"125","130","Right Anchor Construction","Mino P. Calgo","Manager","G/F Uklin Building, Acop,  Caponga, Tublay, Beguet","09185441333/420-9136","active",NULL,NULL
+"126","131","Cabuguiasan Builders","Thomas Mankin","Manager","057 Dapiting, Alapang, La Trinidad, Benguet","Unknown","active",NULL,NULL
+"127","132","LBJ Construction","Luis A. Yubos","Manager","105 Central Fairview Village, Baguio City","09076696299","active",NULL,NULL
+"128","133","APWALTZ Construcion Services and Supplies","Annly A. Pulacan","Manager","Guinaoang, Mankayan, Benguet/ Happy Homes, Magsaysay Ave. Baguio City","09395565977","active",NULL,NULL
+"129","134","ARCGO GENERAL ENGINEERING","Unknown","Manager","Unknown","Uknown","active",NULL,NULL
+"130","135","Balintugan Construction","Unknown","Manager","Unknown","Unknown","active",NULL,NULL
+"131","136","ANSAGAN CONSTRUCTION SERVICES","unknown","Manager","unknown","unknown","active",NULL,NULL
+"132","137","BOTJACK Construction","JICK A. MARIANO","Unknown","058 Sitio Dapiting, Alapang, La Trinidad, Benguet","09076124640","active",NULL,NULL
+"133","138","VANVIN CONSTRUCTION","JOSEPH S. GABOL","Proprietor","019-C Proper Alapang La Trinidad Benguet","09077335118","active",NULL,NULL
+"134","139","JUSTLYN Ralf Construction","Unknown","Unknown","Unknown","Unknown","active",NULL,NULL
+"135","140","Solinio Construction","Unknown","Unknown","Unknown","Unknown","active",NULL,NULL
+"136","141","Leo Heirs Construction","EMMANUEL S. LEO","Proprietor","Acop Caponga Tublay Benguet","09197621705","active",NULL,NULL
+"137","142","P-Raymund Construction","unknown","unknown","unknown","unknown","active",NULL,NULL
+"138","143","TWO M Construction & Engineering Services","MICHAEL S. BAGINGAO","Manager","Loo, Buguias Benguet / 5th FLOOR PINESHILL BUILDING 2, KM 5 , Balili La Trinidad Benguet","09120010099","active",NULL,NULL
+"139","144","JMLP Builders","Lolita M. Pantaleon","Proprietor/General Manager","Saddle, Sagpat, Kibungan/# 26 Main Road, Camdas, Bagui City","09065857422","active",NULL,NULL
+"140","145","BENAD Construction","unknown","unknown","unknown","unknown","active",NULL,NULL
+"141","146","EMNAR Construction And Engineering Services","EGNACIO P. ROSARIO","General Manager","FA 206- Tokiko Bldg, Km. 5, Balili, La Trinidad, Benguet","09380908305","active",NULL,NULL
+"142","147","Kankaloi Construction","Delizo Frank C.  Carpio Sr.","Manager","#203 Balangabang, Bineng La Trinidad, Benguet","09302532958/09399584880","active",NULL,NULL
+"143","149","MAF SABADO Construction Services","unknown","unknown","unknown","unknown","active",NULL,NULL
+"144","150","ZENITHAL-JNA Construction and Supply","Jake T. Altiyen","Proprietor","Dap-ayan 5, Pico, La Trinidad, Benguet","unknown","active",NULL,NULL
+"145","151","Jomarcann General Construction and MJLAC Construction  and Aggregates (JV)","unknown","unknown","unknown","unknown","active",NULL,NULL
+"146","152","Spiderone Construction Company LTD./Random Builders JV","Dominguez Alones","Authorized Managing Officer","Chinese Village Subdivision, Puguis, La Trinidad, Benguet","unknown","active",NULL,NULL
+"147","153","QRJ Construction","unknown","unknown","unknown","unknown","active",NULL,NULL
+"148","154","NORJOHN Construction","JOHNWIL B. CALPASE","Proprietor","Bot-oan, Catlubong, Buguias, Benguet","09217835313","active",NULL,NULL
+"149","155","O.ADCA Construction and Equipment Supplies","unknown","unknown","unknown","unknown","active",NULL,NULL
+"150","156","CLEB Construction","CLEBERT L. SALBINO","Proprietor/Manager","AD-163 BUYAGAN, LA TRINIDAD, BENGUET","09128969868","active",NULL,NULL
+"151","157","Symon Engineering and Construction","Dan Ray  C. Simon","Proprietor","08 Purok 4 Extension Gumangan Road, Aurora Hill, Bayan Park, Baguio City/108 Bokawkan Road, Baguio City","09994466613","active",NULL,NULL
+"152","158","Perfecto D. Igid Construction","Perfecto D. Igid","Proprietor","328 San Vicente, Baguio City","uknown","active",NULL,NULL
+"153","159","Rigne General Construction","Ryan Colilin M. Tolding","Proprietor","IB 96, Laoyan St., Km 6, Betag, La Trinidad, Benguet","uknown","active",NULL,NULL
+"154","160","FSDI-Fluid Systems and Design Inc.","uknown","unknown","uknown","uknown","active",NULL,NULL
+"155","161","FAMILY CIRCLE CONST./DJY CONST. JOINT VENTURE","MARCOS P. LUMA-ANG","Authorized Managing Officer","Kapangan, Benguet","12232","active",NULL,NULL
+"156","162","POLO ENGINEERING & CONSTRUCTION","MARK M. POLO","Proprietor","Pineshill Building KM 5, Balili, La Trinidad, Benguet","09471444890","active",NULL,NULL
+"157","163","NORBANO BUILDERS","NORRIS B. ANOYAN","Proprietor","CATLUBONG, BUGUIAS, BENGUET","09397704003","active",NULL,NULL
+"158","164","RHINESTONE CONSTRUCTION","JULIUS D. ELIO","Proprietor","Tublay, Benguet","09486038201","active",NULL,NULL
+"159","165","DUCANS CONSTRUCTION & SUPPLY","FELECIANO C. NATEGONG","Proprietor","Camp 3, Tuba","09499765043","active",NULL,NULL
+"160","166","MSMV CONSTRUCTION","MARCIAL D. BELINGON","Proprietor","Tomay, Bahong, La Trinidad, Benguet","09096627929","active",NULL,NULL
+"161","167","SEPJR CONSTRUCTION and SUPPLIES TRADING","THOMAS PALILENG JR","Proprietor","MA 151 Puguis La Trinidad Benguet/ Cot-cot, Bangao, Buguias, Benguet","09212232826","active",NULL,NULL
+"162","168","TRIBAL MOVERS CONSTRUCTION","Orlando M. Wankey","Proprietor","Km 13, Shilan, La Trinidad, Benguet/Acop, Tublay, Benguet","09500754684","active",NULL,NULL
+"163","169","FELVIC ENTERPRISES","PRUDENCIO L. LAURIAN","Proprietor","0111 BAYACSAN, TALOY SUR, TUBA, BENGUET","09395851341","active",NULL,NULL
+"164","170","TIMBERLANDS CONSTRUCTION","MARCIAL S. MANMAN","Proprietor","DB 036 MAE BAHONG LA TRINIDAD, BENGUET/Sinipsip, Amgaleyguey, Buguias, Benguet","09462304822","active",NULL,NULL
+"165","171","SCOPPIONEM 97 DEVELOPMENT CORPORATION","LORRAINE DAYNE GAT-ONEN","Manager","uknown","09109410080","active",NULL,NULL
+"166","172","JNMR GENERAL CONSTRUCTION","JOVEN S. ROSALES","Manager","# 396 Badiwan, POBLACION TUBA, Benguet","09291308341","active",NULL,NULL
+"167","173","MAK-JAY CONSTRUCTION","BEN C. BANISA","Manager","KM 5 ASIN ROAD BAGUIO CITY","09294056959","active",NULL,NULL
+"168","174","ALMOND ENGINEERING AND CONSTRUCTION","ROGELIO D. ALIMONDO","Proprietor","058 SAMOYAO ALAPANG LA TRINIDAD BENGUET","0910543040/09988665326","active",NULL,NULL
+"169","175","ANAPEN CONSTRUCTION","JOSEPH S. GALAO-EY","Proprietor","TUBA BENGUET","09486038001","active",NULL,NULL
+"170","176","RNAA BUILDERS","ROY K. KEPES","Proprietor","103-E NORTH SANITARY CAMP, BAGUIO CITY","09996776982","active",NULL,NULL
+"171","177","DICAY CONSTRUCTION SUPPLY AND SERVICES","JEREMIAH P. GUANSO","Proprietor","245 ALAPANG LA TRINIDAD BENGUET/Guanso Hill, Guinaoang, Mankayan, Benguet","09185047000/09076062590","active",NULL,NULL
+"172","178","BENGSE-WAN CONSTRUCTION","CHRISTOPHER A. DANIO","Manager","uknown","09194386996","active",NULL,NULL
+"173","179","IFUBENG CONSTRUCTION","MOISES H. TAYABAN","Manager","ALNO LA TRINIDAD BENGUET","09950913824","active",NULL,NULL
+"174","180","TRYST BUILDERS ENTERPRISES","NESTOR M. PABLO","Manager","uknown","uknown","active",NULL,NULL
+"175","181","Rimatyre Construction Services","RICHARD P. TAN","Manager","50 Nevada Road Campo Sioco Baguio City","442-6988 / 09178503099/09081515949/074-620-4775","active",NULL,NULL
+"176","182","FB BANTALES ENGINEERING CONSTRUCTION","FLORANTE B. BANTALES JR.","Proprietor/MANAGER","Poblacion, Kabayan, Benguet","09398443549","active",NULL,NULL
+"177","183","GUAVA CONSTRUCTION","Evelyn E. Balag-ey","Manager","JD 240 Bayabas, Pico, La Trinidad, Benguet","09291928252","active",NULL,NULL
+"178","184","Random Builders And Fuchigami Construction and Boring Proprietaries JV","Dominguez F. Alones ; Walter T. Fuchigami","Managers","Da 109 Trinivilee Subdivision, Tomay, La Trinidad, Benguet; Pico,La Trinidad,Benguet","09399162745;09503279274","active",NULL,NULL
+"179","185","Kapadsing Construction and Engineering Services","Ronie G. Badio","unknown","Sinacbat, Bakun, Bengeut","09993362680","active",NULL,NULL
+"180","186","Alp Construction","uknown","unknown","uknown","uknown","active",NULL,NULL
+"181","187","Gloram Construction Services","Ramon Rosendo Dengyas, Sr.","Manager/Proprietor","0919 Purok 7, Dontogan, Baguio City","09286894726","active",NULL,NULL
+"182","188","SHERFELIAS CONSTRUCTION","SHERWIN F. ELIAS","Proprietor","108 4/F  Norlu 0 Cedec Building 2 Bokawkan Road, Cresencia Village, Baguio City","09391404316","active",NULL,NULL
+"183","189","MACH CONSTRUCTION","ALBERT L. SAGANDOY","unknown","ITOGON BENGUET","09494128287","active",NULL,NULL
+"184","190","JB LAMI-ING BUILDERS","JERICO B. LAMI-ING","Manager/Proprietor","MONAMON NORTE, BAUKO, MT. PROVINCE","09257805811","active",NULL,NULL
+"185","191","DELTA FORCE CONSTRUCTION","EDENSON T. SAWAC","Manager/Proprietor","LAM-AYAN, BANGAO, BUGUIAS, BENGUET","09461203218","active",NULL,NULL
+"186","192","GELLE CONSTRUCTION SERVICES","GELLENE O. LESINO","Manager","255-B CENTRAL GUISAD BAGUIO CITY / ABATAN BUGUIAS BENGUET","09091664003","active",NULL,NULL
+"187","193","J.D. JR GALUTAN BUILDERS","JOHNNY D. GALUTAN JR","Proprietor","Domilos St. Tuding, Itogon, Benguet","09484152103","active",NULL,NULL
+"188","194","Boy-cos Construction","Asthor D. Cosme","Proprietor","Ambangeg, Daclan, Bokod","09079005503","active",NULL,NULL
+"189","195","Harlance Builders","Mila L. Singson","Proprietor","#72 Purok 27 San Carlos Heights, Irisan, Baguio City","09476970909","active",NULL,NULL
+"190","196","Bryje Builders","Edson D. Galletes","Proprietor/MANAGER","Mogao Balili Mankayan","09285354880","active",NULL,NULL
+"191","197","Monsur Construction","Tomas B. Pacio","Manager","Monamon Sur Bauko Mt. Province","0910525319","active",NULL,NULL
+"192","198","Rekeam Construction and Supply","Pacita T. Bag-ayan","Manager","Ampusongan Bakun Benguet","09089250751 / 09158307692","active",NULL,NULL
+"193","199","Abukay Construction","Lyndon S. Balageo","Manager","Dalicno Ampucao Itogon Benguet","09295112433","active",NULL,NULL
+"194","200","M.P. Taberao Construction Services and Supplies","Moises P. Taberao","Manager","Hilltop Ambuklao Bokod Benguet","09399627224","active",NULL,NULL
+"195","201","Pegado Engineering and Construction","Mary Joy G. Pegado","Manager","Bayabas, Sablan, Benguet","09486297111\09092809240","active",NULL,NULL
+"196","202","ASYANA CONSTRUCTION CONSULTANCY","Fernando L. Ballasio","Manager","201 Anaheim, The Levels, Alabang Filinvest, Muntinlupa City","09567682678","active",NULL,NULL
+"197","203","JALC CONSTRUCTION & GEOTESTING SERVICES","Jurgenson Alex L. Canuto","Manager","Peday Kamog Sablan / AC 54 Buyagan Poblacion La Trinidad Benguet","09213266895 / 09175052010","active",NULL,NULL
+"198","204","I. M. BONGAR & CO. INC.","ISAIAS M. BONGAR","Manager/Proprietor","310 PILAR ROAD, ALMANZA 1, LAS PINAS CITY","09178825051/09258630225","active",NULL,NULL
+"199","205","Bakun Construction","George D. Yubos","Manager","MB-032 Puguis La Trinidad Benguet","09999780084","active",NULL,NULL
+"200","206","W.E.G. CONSTRUCTION","WILFREDO E. GOPENG","Proprietor/General Manager","69 BADIHOY ST. GUISAD BAGUIO CITY","09159234904/09985580977","active",NULL,NULL
+"201","207","MERRY HEART CONSTRUCTION","JIM BEAM M. TOLDING","Manager","IC 47 Km. 6, BETAG, LA TRINIDAD, BENGUET","09395684686","active",NULL,NULL
+"202","208","D.L. SUIDTA CONSTRUCTION","DENVER L. SUIDTA","Manager","OC-128 CENTRAL TAWANG LA TRINIDAD BENGUET","09395656777 / 09563066115","active",NULL,NULL
+"203","209","LD Castle Construction Services","Lee-his E. Domawal","Proprietor","Bakong Loakan Itogon Benguet","09106792561","active",NULL,NULL
+"204","210","Rybate Builders","Ryan Melchor B. Tello","Manager","Bangao Ambuclao Bokod Benguet","09186521630","active",NULL,NULL
+"205","211","Summa Water Resources Inc.","Marichu T. Decendario","Manager","369 Dr. Sixto Antonio Avenue Maybunga Pasig","8288-1529 / 09352350348","active",NULL,NULL
+"206","212","TILA-OK CONSTRUCTION","JAN MARC R.  ACAY","Manager","Batuang Virac Itogon Benguet / 31 SOUTH SANITARY CAMP, BAGUIO CITY","09193304012","active",NULL,NULL
+"207","213","DELTA-FORCE CONSTRUCTION","EDENSON T. SAWAC","Manager","BANGAO, BUGUIAS, BENGUET","09461203218","active",NULL,NULL
+"208","214","JAN-REAL CONSTRUCTION SERVICES","Joliza D. Anselmo","Manager","Abatan Buguias Benguet / Km 5 Balili La Trinidad Benguet","09302693417","active",NULL,NULL
+"209","215","JESSIE CONSTRUCTION SERVICES","JESSIE A. PALANGDAN","Manager","Tuding Itogon Benguet","09071271924","active",NULL,NULL
+"210","216","SON 21 CIVIL ENGINEERING CONSTRUCTION","EDISON POLON MAKIN","Manager","057 DAPITING ALAPANG LA TRINIDAD BENGUET","09760170084","active",NULL,NULL
+"211","217","REMFERNANDEZ CONSTRUCTION","REMBERT G.  FERNANDEZ","Manager","POBLACION BAKUN BENGUET/ JC 012 KM PICO LA TRINIDAD BENGUET","09185008100","active",NULL,NULL
+"212","218","PBAJ CONSTRUCTION &amp;amp; SUPPLY","ARIEL B. PALINGET","Manager","JA-210 Upper Cogcoga, Km. 3, Pico, La Trinidad, Benguet / Rm. 408, FA 146, Pines Hill Bussiness Center, Km. 5 Balili, La Trinidad, Benguet","09104515152","active",NULL,NULL
+"213","219","ASILIANS CONSTRUCTION AND ENGINEERING SERVICES","VALENTINO C. AS-IL","Manager","OD 410 BANIG TAWANG LA TRINIDAD BENGUET","09075956583","active",NULL,NULL
+"214","220","KAIT BUILDERS AND CONSTRUCTION","HEINTJE S. PIS-OY","Manager","#31 Ampucao, Itogon, Benguet / Easter Road, Guisad, Baguio City","09104709787","active",NULL,NULL

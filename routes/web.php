@@ -99,6 +99,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('counter_check_reports', ['as' => 'pages.counter_check_reports', 'uses' => 'App\Http\Controllers\PageController@counter_check_reports']);
 	Route::get('accounts_receivable', ['as' => 'pages.accounts_receivable', 'uses' => 'App\Http\Controllers\PageController@accounts_receivable']);
 	Route::get('memo', ['as' => 'pages.memo', 'uses' => 'App\Http\Controllers\PageController@memo']);
+	Route::get('account_access', ['as' => 'pages.account_access', 'uses' => 'App\Http\Controllers\PageController@account_access']);
 }); 
 
 Route::group(['middleware' => 'auth'], function () {
@@ -269,3 +270,6 @@ Route::post('deleteMemoData', [MemoController::class, 'deleteMemoData'])->name('
 Route::post('cancelMemoData', [MemoController::class, 'cancelMemoData'])->name('cancelMemoData');
 Route::post('restoreMemoData', [MemoController::class, 'restoreMemoData'])->name('restoreMemoData');
 Route::post('getMemoTransactionData', [MemoController::class, 'getMemoTransactionData'])->name('getMemoTransactionData');
+
+Route::post('check_form', [BankDetailsController::class, 'insertCheck'])->name('check_form');
+Route::post('viewCheckDetails', [BankDetailsController::class, 'viewCheckDetails'])->name('viewCheckDetails');

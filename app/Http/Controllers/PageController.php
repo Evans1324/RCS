@@ -1448,12 +1448,34 @@ class PageController extends Controller
     }
 
     /**
-     * Display Counter Check Reports page
+     * Display Counter Memo page
      *
      * @return \Illuminate\View\View
      */
     public function memo()
     {
         return view('pages.memo');
+    }
+
+    /**
+     * Display Counter Account Access page
+     *
+     * @return \Illuminate\View\View
+     */
+    public function account_access()
+    {
+        $year = 2022;
+        $accCategories = Post::all();
+        $accGroups = AccountGroup::all();
+        $accTitles = AccountTitles::all();
+        $accSubtitles = AccountSubtitles::all();
+        $rateChange = RateChange::latest()->first();
+
+        $accSubSubtitles = AccountSubSubtitles::select('*', 'budget_estimates.amount AS budget', 'account_sub_subtitles.id')
+        ->where('budget_estimates.year', $year)
+        ->leftJoin('budget_estimates', 'account_sub_subtitles.id', 'budget_estimates.sub_subtitles_id')
+        ->get();
+
+        return view('pages.account_access', ['rateChange'=>$rateChange, 'accCategories'=>$accCategories, 'accGroups'=>$accGroups, 'accTitles'=>$accTitles, 'accSubtitles'=>$accSubtitles, 'accSubSubtitles'=>$accSubSubtitles]);
     }
 }

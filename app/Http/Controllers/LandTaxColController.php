@@ -17,6 +17,7 @@ use App\Models\SandGravelPermittees;
 use App\Models\SpecialPermittees;
 use App\Models\Barangay;
 use App\Models\Holidays;
+use App\Models\BankDetails;
 
 class LandTaxColController extends Controller
 {
@@ -535,9 +536,17 @@ class LandTaxColController extends Controller
             $landTaxAccount->acc_title_id = $acc_title_id;
             $landTaxAccount->sub_title_id = $acc_subtitle_id;
             $landTaxAccount->nature = $request->taxColNature[$i];
+            if ($request->taxColTransaction == "Check & Cash") {
+                if ($request->cashRow != null && isset($request->cashRow[$i]) && $request->cashRow[$i] == 'Cash') {
+                    $landTaxAccount->transact_type = $request->cashRow[$i];
+                } elseif ($request->checkRow != null && isset($request->checkRow[$i]) && $request->checkRow[$i] == 'Check') {
+                    $landTaxAccount->transact_type = $request->checkRow[$i];
+                }
+            } 
             $landTaxAccount->amount = str_replace(',', '', $request->taxColAmount[$i]);
             $landTaxAccount->save();
         }
+        $geftAffectedDate = BankDetails::where('serial_ref', $serialNumber)->update(['bank_id' => $info->id ]);
         DB::commit();
         return $landTaxInfo->id;
     }
@@ -595,7 +604,7 @@ class LandTaxColController extends Controller
         
         $finishedSeries = Serial::where('end_serial', $request->serial)
         ->first();
-        dd($request->serial);
+        
         if ($finishedSeries != null) {
             $updateSeries = Serial::find($finishedSeries->id);
             $updateSeries->status = "Completed";

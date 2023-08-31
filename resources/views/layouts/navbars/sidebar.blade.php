@@ -272,6 +272,12 @@
                                     <p>{{ __('Account Subtitles') }}</p>
                                 </a>
                             </li>
+                            <li @if ($pageSlug == 'account_access') class="active " @endif>
+                                <a href="{{ route('pages.account_access')  }}">
+                                    <i class="tim-icons icon-single-02"></i>
+                                    <p>{{ __('Account Access') }}</p>
+                                </a>
+                            </li>
                             <li @if ($pageSlug == 'budget_estimate') class="active " @endif>
                                 <a href="{{ route('pages.budget_estimate')  }}">
                                     <i class="tim-icons icon-single-02"></i>

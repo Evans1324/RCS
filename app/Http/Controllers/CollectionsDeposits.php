@@ -183,6 +183,9 @@ class CollectionsDeposits extends Controller
         ->whereRaw('land_tax_infos.report_date ="'.$startDate.'"')
         ->get();
 
+        // For cash & check transactions
+        // $cashAndCheckCollection = LandTaxAccount::select('amount', 'transact_type')->where()->get();
+
         $getCheckOrMoneyOrder = LandTaxInfo::select('bank_name', 'number', DB::raw("SUM(CAST(REPLACE(total_amount, ',', '') AS DECIMAL(10,2))) AS total_amount"))
         ->whereRaw('land_tax_infos.report_date ="'.$startDate.'"  AND land_tax_infos.receipt_type != "Field Land Tax Collection Cash" AND land_tax_infos.status != "Cancelled"')
         // ->whereRaw('REPLACE("total_amount", ",", "")')
@@ -1096,7 +1099,7 @@ class CollectionsDeposits extends Controller
 
         $worksheet->getStyle('A7:M'.$row)->applyFromArray($borderedStyleArray);
 
-        // Report D
+        // Sheet D
         $worksheet = $spreadsheet->getSheetByName('D');
         $grandTotalCash = 0;
         $grandTotalCheck = 0;

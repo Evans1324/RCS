@@ -12,6 +12,7 @@ use App\Models\CollectionRate;
 use App\Models\Serial;
 use App\Models\SpecialCase;
 use App\Models\Holidays;
+use App\Models\BankDetails;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -184,7 +185,10 @@ class CollectionsDeposits extends Controller
         ->get();
 
         // For cash & check transactions
-        // $cashAndCheckCollection = LandTaxAccount::select('amount', 'transact_type')->where()->get();
+        $cashAndCheckCollection = LandTaxAccount::select('amount', 'transact_type')
+        ->where('bank_id', 'land_tax_accounts.id')
+        ->leftJoin('bank_details', 'land_tax_accounts.id', 'bank_details.bank_id')
+        ->get();
 
         $getCheckOrMoneyOrder = LandTaxInfo::select('bank_name', 'number', DB::raw("SUM(CAST(REPLACE(total_amount, ',', '') AS DECIMAL(10,2))) AS total_amount"))
         ->whereRaw('land_tax_infos.report_date ="'.$startDate.'"  AND land_tax_infos.receipt_type != "Field Land Tax Collection Cash" AND land_tax_infos.status != "Cancelled"')
@@ -1106,14 +1110,24 @@ class CollectionsDeposits extends Controller
         $grandTotalMoneyOrder = 0;
         $grandTotalADA = 0;
         $grandTotalBankDeposit = 0;
+
+        $cashRow = 0;
+        $checkRow = 0;
+        foreach ($cashAndCheckCollection as $ccColl) {
+            if ($ccColl->transact_type == 'Cash') {
+                $cashRow += $ccCol->amount;
+            } else {
+                $checkRow += $ccCol->amount;
+            }
+        }
         
         foreach ($allCollections as $coll) {
             if ($coll->transact_type == 'Cash') {
-                $grandTotalCash += (float)str_replace(',', '', $coll->total_amount);
+                $grandTotalCash += (float)str_replace(',', '', $coll->total_amount)+$cashRow;
             }
 
             if ($coll->transact_type == 'Check') {
-                $grandTotalCheck += (float)str_replace(',', '', $coll->total_amount);
+                $grandTotalCheck += (float)str_replace(',', '', $coll->total_amount)+$checkRow;
             }
 
             if ($coll->transact_type == 'Money Order') {

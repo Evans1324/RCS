@@ -787,6 +787,9 @@ class PageController extends Controller
                     <p>'.$details->transact_date.'</p>
                 </div>
             </div>';
+        } else if ($details->transact_type == 'Cash & Check') {
+            $transact = '<div class="square-cash"></div>';
+            $transact = '<div class="square-check"></div>';
         } else {
             $transact = '<div class="square-others"></div>
             <div class="bank-info">

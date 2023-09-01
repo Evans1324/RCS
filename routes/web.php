@@ -40,6 +40,7 @@ use App\Http\Controllers\CounterCheckController;
 use App\Http\Controllers\AccountSubSubtitlesController;
 use App\Http\Controllers\AccountsReceivableController;
 use App\Http\Controllers\MemoController;
+use App\Http\Controllers\BankDetailsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes

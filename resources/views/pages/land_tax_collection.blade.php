@@ -502,6 +502,65 @@
         </div>
     </form>
 
+    <!-- CHECK MODAL -->
+    <div class="modal fade" id="checkModal" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="checkModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content modal-theme-color">
+                <div class="modal-header">
+                    <h3 class="text-white modal-title" id="checkModalLongTitle">Bank Details</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="check_form" class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4 d-none">
+                                <label class="text-light" for="bankRowIndex">Row Index</label>
+                                <input type="text" id="bankRowIndex" name="bankRowIndex"
+                                    class="form-control mb-0 bg-white text-dark">
+                                <input type="text" id="bankRowId" name="bankRowId"
+                                    class="form-control mb-0 bg-white text-dark">
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label class="text-light" for="taxColRowBank">Bank Name</label>
+                                <input type="text" name="taxColRowBank"
+                                    class="form-control bg-white text-dark" id="taxColRowBank">
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label class="text-light" for="taxColRowNumber">Number</label>
+                                <input type="text" name="taxColRowNumber"
+                                    class="form-control bg-white text-dark" id="taxColRowNumber">
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label class="text-light" for="taxColRowTransactDate">Date</label>
+                                <input type="text" name="taxColRowTransactDate"
+                                    class="datepicker form-control bg-white text-dark" id="taxColRowTransactDate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="rowBankRemarks" class="col-sm-12">
+                                <label class="text-light" for="taxColRowBankRemarks">Bank Remarks</label>
+                                <textarea id="taxColRowBankRemarks" name="taxColRowBankRemarks"></textarea>
+                            </div>
+                        </div>
+                        <input type="text" name="serailNumReference"
+                                    class="form-control bg-white text-dark d-none" id="serailNumReference">
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="closeBtn btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="save-check" class="float-right btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END OF CHECK MODAL -->
+
     <!-- CERTIFICATION MODAL -->
     <div class="modal fade" id="certificateModal" tabindex="-1" role="dialog"
         aria-labelledby="certificateModalLongTitle" aria-hidden="true">
@@ -1183,6 +1242,11 @@
         tinymce.init({
             selector: '#taxColReceiptRemarks',
             forced_root_block : 'div',
+        });
+
+        tinymce.init({
+            selector: '#taxColRowBankRemarks',
+            forced_root_block : 'div'
         });
 
         tinymce.init({
@@ -3910,7 +3974,7 @@
             html += '<input type="text" name="taxColAmount[]" class="taxColAmount form-control mb-0 bg-white text-dark">';
             html += '</td>'
 
-            if ($('#taxColTransaction').val() == "Check & Cash") {
+            if ($('#taxColTransaction').val() == "Cash & Check") {
                 html += '<td>';
                 html += '<input class="cashRow cashRowVal'+rowCounter+' cashChRowID'+rowID+'" type="checkbox" name="cashRow[]">';
                 html += '</td>'
@@ -4192,7 +4256,7 @@
                 $('.checkRow').addClass('d-none');
 
                 $('#bankRemarks').addClass('d-none');
-            } else if ($(this).val() == 'Check & Cash') {
+            } else if ($(this).val() == 'Cash & Check') {
                 $('.cashRow').removeClass('d-none');
                 $('.checkRow').removeClass('d-none');
 

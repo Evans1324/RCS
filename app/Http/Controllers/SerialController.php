@@ -29,6 +29,9 @@ class SerialController extends Controller
                 } else if ($request->startOfSerial == $series->start_serial || $series->end_serial == $request->endOfSerial) {
                     $message = 'Entered duplicate value';
                     return back()->withInput()->with('Message', $message);
+                } else {
+                    $startSerialAssigned = $request->startOfSerial;
+                    $endSerialAssigned = $request->endOfSerial;
                 }
             }
         }

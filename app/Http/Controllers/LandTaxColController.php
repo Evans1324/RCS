@@ -536,11 +536,11 @@ class LandTaxColController extends Controller
             $landTaxAccount->acc_title_id = $acc_title_id;
             $landTaxAccount->sub_title_id = $acc_subtitle_id;
             $landTaxAccount->nature = $request->taxColNature[$i];
-            if ($request->taxColTransaction == "Check & Cash") {
-                if ($request->cashRow != null && isset($request->cashRow[$i]) && $request->cashRow[$i] == 'Cash') {
-                    $landTaxAccount->transact_type = $request->cashRow[$i];
-                } elseif ($request->checkRow != null && isset($request->checkRow[$i]) && $request->checkRow[$i] == 'Check') {
-                    $landTaxAccount->transact_type = $request->checkRow[$i];
+            if ($request->taxColTransaction == "Cash & Check") {
+                if ($request->cashRowTrans != null && isset($request->cashRowTrans[$i]) && $request->cashRowTrans[$i] == 'Cash') {
+                    $landTaxAccount->cash = "on";
+                } else {
+                    $landTaxAccount->check = "on";
                 }
             } 
             $landTaxAccount->amount = str_replace(',', '', $request->taxColAmount[$i]);

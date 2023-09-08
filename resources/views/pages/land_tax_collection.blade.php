@@ -323,7 +323,7 @@
                             </div>
 
                             <div class="row mt-3">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label class="text-light" for="taxColCert">With Certificate</label>
                                     <select class="form-control bg-white text-dark" name="taxColCert" id="taxColCert">
                                         <option class="bg-white" selected value="None">None</option>
@@ -334,7 +334,7 @@
                                     </select>
                                 </div>
 
-                                <div class="col-sm-3">
+                                <div class="col-sm-4">
                                     <label class="text-light" for="taxColMunicipality">Municipality</label>
                                     <select readonly class="form-control bg-light text-dark" name="taxColMunicipality"
                                         id="taxColMunicipality">
@@ -342,7 +342,8 @@
                                     </select>
                                 </div>
 
-                                <div id="taxColBarSelect" class="col-sm-3">
+
+                                <div id="taxColBarSelect" class="col-sm-4">
                                     <label class="text-light" for="taxColBarangay">Barangay</label>
                                     <select readonly class="form-control bg-light text-dark" name="taxColBarangay"
                                     id="taxColBarangay">
@@ -402,11 +403,13 @@
                                                     </td>
 
                                                     <td class="cashRow d-none">
-                                                        <input class="cashRowVal" name="cashRow[]" type="checkbox">
+                                                        <input type="hidden" name="cashRowTrans[]" value="off">
+                                                        <input class="cashRowVal" name="cashRowTrans[]" type="checkbox">
                                                     </td>
 
                                                     <td style="width: 8%" class="checkRow d-none">
-                                                        <input id="mainCheck" class="checkRow checkRowVal" name="checkRow[]" type="checkbox">
+                                                        <input type="hidden" name="checkRowTrans[]" value="off">
+                                                        <input id="mainCheck" class="checkRowVal" name="checkRowTrans[]" type="checkbox">
                                                         <button type="button" class="btn-primary viewCheck checkBtn d-none">View</button>
                                                     </td>
 
@@ -1816,6 +1819,7 @@
                 $('#addTaxColModal').modal('show');
                 // $('#taxColEditcurrentDate').val(data.report_date);
                 $('#taxColID').val(originalData[0]);
+                $('#bankRowId').val(originalData[0]);
                 $('#print-receipt').prop('href', 'printReceipt/' + originalData[0]);
                 $('#taxColReceiptType').val(data.receipt_type);
                 if (data.date_edited == "1970-01-01 08:00:00" || data.date_edited == null) {
@@ -1869,7 +1873,7 @@
                 } else {
                     $('#seriesInput').addClass('d-none');
                 }
-                //$('#taxColReceiptType').trigger('change');
+                
                 $('#taxColSeries').val(data.series_id);
                 $('#serialInput').removeClass('d-none');
                 if (data.client_type_radio == 'Individual') {
@@ -1975,6 +1979,7 @@
                 } else {
                     $('#bankRemarks').removeClass('d-none');
                 }
+                let taxColAccID = $('.taxColAccountID')[0];
                 let taxColAcc = $('.taxColAccount')[0];
                 let taxColNature = $('.taxColNature')[0];
                 let taxColQuantity = $('.taxColQuantity')[0];
@@ -1982,6 +1987,7 @@
                 let taxColTypeRate = $('.taxColTypeRate')[0];
                 let cashRowVal = $('.cashRowVal')[0];
                 let checkRowVal = $('.checkRowVal')[0];
+                $(taxColAccID).val('');
                 $(taxColAcc).val('');
                 $(taxColNature).val('');
                 $(taxColQuantity).val('');
@@ -2001,27 +2007,26 @@
                         id: originalData[0]
                     }
                 }).done(function(data) {
+                    console.log(data);
                     let rowCount = data.length - 1;
                     if (data.length > 0) {
+                        let taxColAccID = $('.taxColAccountID')[0];
                         let taxColAcc = $('.taxColAccount')[0];
                         let taxColNature = $('.taxColNature')[0];
                         let taxColQuantity = $('.taxColQuantity')[0];
                         let taxColAmount = $('.taxColAmount')[0];
                         let taxColTypeRate = $('.taxColTypeRate')[0];
-                        let cashRowVal = $('.cashRowVal')[0];
-                        let checkRowVal = $('.checkRowVal')[0];
+                        $(taxColAccID).val(data[0].id);
                         $(taxColAcc).val(data[0].account);
                         $(taxColNature).val(data[0].nature);
                         $(taxColQuantity).val(data[0].quantity);
                         $(taxColAmount).val(data[0].amount);
                         $(taxColTypeRate).val(data[0].rate_type);
-                        $(cashRowVal).val(data[0].transact_type);
-                        $(checkRowVal).val(data[0].transact_type);
 
-                        if (data[0].transact_type == 'Cash') {
+                        if (data[0].cash == 'on') {
                             $('.cashRowVal').prop('checked', true);
                             $('.checkRowVal').prop("checked", false);
-                        } else if (data[0].transact_type == 'Check') {
+                        } else if (data[0].check == 'on') {
                             $('.cashRowVal').prop('checked', false);
                             $('.checkRowVal').prop("checked", true);
                             $('.checkBtn').removeClass('d-none');
@@ -2030,6 +2035,7 @@
                         let total = parseFloat(data[0].amount);
                         for (let i = 1; i <= rowCount; i++) {
                             $('#addRowAccount').trigger('click');
+                            taxColAccID = $('.taxColAccountID')[i];
                             taxColAcc = $('.taxColAccount')[i];
                             taxColNature = $('.taxColNature')[i];
                             taxColQuantity = $('.taxColQuantity')[i];
@@ -2038,17 +2044,16 @@
                             cashRowVal = $('.cashRowVal')[i];
                             checkRowVal = $('.checkRowVal')[i];
                             total = parseFloat(data[i].amount) + total;
+                            $(taxColAccID).val(data[i].id);
                             $(taxColAcc).val(data[i].account);
                             $(taxColNature).val(data[i].nature);
                             $(taxColQuantity).val(data[i].quantity);
                             $(taxColAmount).val(data[i].amount);
                             $(taxColTypeRate).val(data[i].rate_type);
-                            $(cashRowVal).val(data[i].transact_type);
-                            $(checkRowVal).val(data[i].transact_type);
-                            if (data[i].transact_type == 'Cash') {
+                            if (data[i].cash == 'on') {
                                 $('.cashRowVal'+[i]).prop('checked', true);
                                 $('.checkRowVal'+[i]).prop("checked", false);
-                            } else if (data[i].transact_type == 'Check') {
+                            } else if (data[i].check == 'on') {
                                 $('.cashRowVal'+[i]).prop('checked', false);
                                 $('.checkRowVal'+[i]).prop("checked", true);
                                 $('.viewCheck'+[i]).removeClass('d-none');
@@ -3848,7 +3853,7 @@
             $(taxColQuantity).val($('#schedVolume').val());
             $(taxColTotal).val($('#schedTotal').val());
             $(taxColTotal).trigger('change');
-            console.log($('#schedAuto').val());
+            
             if ($('#schedAuto').val() == 'Aggregate Base Course/SBBC (cu.m @ 17.50)') {
                 $(taxColNature).val('Aggregate Base Course/SBBC ('+$('#schedVolume').val()+'cu.m @ 17.50)');
             } else if ($('#schedAuto').val() == 'Boulders/stones (cu.m @ 30.00)') {
@@ -3976,11 +3981,11 @@
 
             if ($('#taxColTransaction').val() == "Cash & Check") {
                 html += '<td>';
-                html += '<input class="cashRow cashRowVal'+rowCounter+' cashChRowID'+rowID+'" type="checkbox" name="cashRow[]">';
+                html += '<input class="cashRow cashRowVal'+rowCounter+' cashChRowID'+rowID+'" type="checkbox" name="cashRowTrans[]">';
                 html += '</td>'
 
                 html += '<td style="width: 8%">';
-                html += '<input class="checkRow checkRowVal'+rowCounter+' checkRowID'+rowID+'" type="checkbox" name="checkRow[]">';
+                html += '<input class="checkRow checkRowVal'+rowCounter+' checkRowID'+rowID+'" type="checkbox" name="checkRowTrans[]">';
                 html += '<button type="button" class="btn-primary viewCheck'+rowCounter+' viewBtnID'+rowID+' checkBtn d-none">View</button>'
                 html += '</td>'
             }
@@ -4001,28 +4006,31 @@
                 $(this).closest('tr').remove();
                 $('.taxColAmount').trigger('change');
             });
-
+            
             if (rowID) {
                 console.log(00);
-                $('.cashRowVal'+rowID).click(function() {
+                $('.cashChRowID'+rowID).click(function() {
                     if ($(this).prop("checked")) {
                         $(this).val("Cash");
+                        $('.checkRowID'+rowID).prop('checked', false);
+                        $('.viewBtnID'+rowID).addClass('d-none');
                     } else {
                         $(this).val("");
                     }
                 });
                 
-                $('.checkRowVal'+rowID).click(function() {
+                $('.checkRowID'+rowID).click(function() {
                     $('#check_form')[0].reset();
                     $('#serailNumReference').val($('#serialNumber').val());
                     let rowCounts = $(this).closest('tr').index();
                     if ($(this).prop("checked")) {
                         $(this).val("Check");
                         $('#checkModal').modal('show');
-                        $('.viewBtnID'+$(this).closest('tr').index()).removeClass('d-none');
+                        $('.viewBtnID'+rowID).removeClass('d-none');
+                        $('.cashChRowID'+rowID).prop('checked', false);
                     } else {
                         $(this).val("");
-                        $('.viewBtnID'+$(this).closest('tr').index()).addClass('d-none');
+                        $('.viewBtnID'+rowID).addClass('d-none');
                     }
                 });
                 
@@ -4049,6 +4057,7 @@
                                     $('#taxColRowBank').val(nRow[i].bank_name);
                                     $('#taxColRowNumber').val(nRow[i].bank_number);
                                     $('#taxColRowTransactDate').val(nRow[i].bank_date);
+                                    $('#taxColRowBankRemarks').val(nRow[i].bank_remarks);
                                 }
                             } else {
                                 $('#check_form')[0].reset();
@@ -4061,6 +4070,8 @@
                 $('.cashRowVal'+rowCounter).click(function() {
                     if ($(this).prop("checked")) {
                         $(this).val("Cash");
+                        $('.checkRowVal'+rowCounter).prop('checked', false);
+                        $('.viewCheck'+rowCounter).addClass('d-none');
                     } else {
                         $(this).val("");
                     }
@@ -4074,6 +4085,7 @@
                         $(this).val("Check");
                         $('#checkModal').modal('show');
                         $('.viewCheck'+$(this).closest('tr').index()).removeClass('d-none');
+                        $('.cashRowVal'+$(this).closest('tr').index()).prop('checked', false);
                     } else {
                         $(this).val("");
                         $('.viewCheck'+$(this).closest('tr').index()).addClass('d-none');
@@ -4103,6 +4115,7 @@
                                     $('#taxColRowBank').val(nRow[i].bank_name);
                                     $('#taxColRowNumber').val(nRow[i].bank_number);
                                     $('#taxColRowTransactDate').val(nRow[i].bank_date);
+                                    $('#taxColRowBankRemarks').val(nRow[i].bank_remarks);
                                 }
                             } else {
                                 $('#check_form')[0].reset();
@@ -4187,6 +4200,8 @@
         $('.cashRowVal').click(function() {
             if ($(this).prop("checked")) {
                 $(this).val("Cash");
+                $('.checkRowVal').prop('checked', false);
+                $('.viewCheck').addClass('d-none');
             } else {
                 $(this).val("");
             }
@@ -4197,7 +4212,7 @@
                 $(this).val("Check");
                 $('#checkModal').modal('show');
                 $('.viewCheck').removeClass('d-none');
-                
+                $('.cashRowVal').prop('checked', false);
             } else {
                 $(this).val("");
                 $('.viewCheck').addClass('d-none');
@@ -4207,7 +4222,7 @@
         $('.viewCheck').click(function() {
             $('#checkModal').modal('show');
             $('#serailNumReference').val($('#serialNumber').val());
-            console.log($('#serialNumber').val());
+            
             $.ajax({
                 method: "POST",
                 url: "{{ route('viewCheckDetails') }}",
@@ -4220,11 +4235,13 @@
                 }
             }).done(function(data) {
                 let fRow = data[0];
+                letfnRow = data[0][0];
                 if (fRow) {
-                    if (fRow.transact_type == 'Check' && $('#serialNumber').val() == fRow.serial_ref) {
-                        $('#taxColRowBank').val(fRow.bank_name);
-                        $('#taxColRowNumber').val(fRow.bank_number);
-                        $('#taxColRowTransactDate').val(fRow.bank_date);
+                    if (letfnRow.check != null && $('#serialNumber').val() == letfnRow.serial_ref) {
+                        $('#taxColRowBank').val(letfnRow.bank_name);
+                        $('#taxColRowNumber').val(letfnRow.bank_number);
+                        $('#taxColRowTransactDate').val(letfnRow.bank_date);
+                        $('#taxColRowBankRemarks').val(letfnRow.bank_remarks);
                     }
                 } else {
                     $('#check_form')[0].reset();
@@ -4532,6 +4549,7 @@
 
         $('#save-check').click(function() {
             let checkData  = $('#check_form').serializeArray();
+            checkData.push({name:'bankRemarks', value:tinymce.get("taxColRowBankRemarks").getContent()});
             Swal.fire({
                 icon: 'info',
                 title: 'Form will be Saved. Are you sure you want to proceed?',
@@ -4570,7 +4588,6 @@
                     stringFloat = $(this).val();
                 }
                 let float = stringFloat.replace(/\,/g,'');
-                console.log(float);
                 sum = sum + parseFloat(float);
             });
             sum = sum.toFixed(2);

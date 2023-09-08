@@ -185,9 +185,18 @@ class CollectionsDeposits extends Controller
         ->get();
 
         // For cash & check transactions
-        $cashAndCheckCollection = LandTaxAccount::select('amount', 'transact_type')
-        ->where('bank_id', 'land_tax_accounts.id')
-        ->leftJoin('bank_details', 'land_tax_accounts.id', 'bank_details.bank_id')
+        $cashAndCheckCollection = BankDetails::select('report_date', 'amount', 'cash', 'check')
+        ->orWhere('cash', '<>', null)
+        ->orWhere('check', '<>', null)
+        ->whereRaw('land_tax_infos.report_date ="'.$startDate.'"  AND land_tax_infos.receipt_type != "Field Land Tax Collection Cash" AND land_tax_infos.status != "Cancelled"')
+        ->leftJoin('land_tax_infos', 'land_tax_infos.id', 'bank_details.bank_id')
+        ->leftJoin('land_tax_accounts', 'bank_details.bank_id', 'land_tax_accounts.info_id')
+        ->get();
+
+        $getCheckRemarks = BankDetails::select('check', 'report_date', 'bank_details.bank_name', 'bank_details.bank_number', 'amount')
+        ->whereRaw('land_tax_infos.report_date ="'.$startDate.'"  AND land_tax_infos.receipt_type != "Field Land Tax Collection Cash" AND land_tax_infos.status != "Cancelled"')
+        ->leftJoin('land_tax_infos', 'land_tax_infos.id', 'bank_details.bank_id')
+        ->leftJoin('land_tax_accounts', 'bank_details.bank_id', 'land_tax_accounts.info_id')
         ->get();
 
         $getCheckOrMoneyOrder = LandTaxInfo::select('bank_name', 'number', DB::raw("SUM(CAST(REPLACE(total_amount, ',', '') AS DECIMAL(10,2))) AS total_amount"))
@@ -1113,21 +1122,27 @@ class CollectionsDeposits extends Controller
 
         $cashRow = 0;
         $checkRow = 0;
-        foreach ($cashAndCheckCollection as $ccColl) {
-            if ($ccColl->transact_type == 'Cash') {
-                $cashRow += $ccCol->amount;
+        
+        foreach ($cashAndCheckCollection as $cColl) {
+            if ($cColl->cash == 'on') {
+                $cashRow += $cColl->amount;
             } else {
-                $checkRow += $ccCol->amount;
+                $checkRow += $cColl->amount;
             }
         }
         
         foreach ($allCollections as $coll) {
             if ($coll->transact_type == 'Cash') {
-                $grandTotalCash += (float)str_replace(',', '', $coll->total_amount)+$cashRow;
+                $grandTotalCash += (float)str_replace(',', '', $coll->total_amount);
             }
 
             if ($coll->transact_type == 'Check') {
-                $grandTotalCheck += (float)str_replace(',', '', $coll->total_amount)+$checkRow;
+                $grandTotalCheck += (float)str_replace(',', '', $coll->total_amount);
+            }
+
+            if ($coll->transact_type == 'Cash & Check') {
+                $grandTotalCash += (float)str_replace(',', '', $cashRow);
+                $grandTotalCheck += (float)str_replace(',', '', $checkRow);
             }
 
             if ($coll->transact_type == 'Money Order') {
@@ -1156,6 +1171,19 @@ class CollectionsDeposits extends Controller
             }
         }
 
+        if ($getCheckRemarks !== 0) {
+            foreach ($getCheckRemarks as $checkRemarks) {
+                if ($checkRemarks->check == 'on') {
+                    $worksheet->setCellValue('F'.($row-1), $checkRemarks->bank_name);
+                    $worksheet->setCellValue('G'.($row-1), $checkRemarks->bank_number);
+                    $worksheet->setCellValue('H'.($row-1), 'Provincial Government of Benguet');
+                    $worksheet->setCellValue('I'.($row-1), $checkRemarks->amount);
+                    $worksheet->getStyle('I'.($row-1).':I'.($row+1))->getFont()->setBold(true);
+                    $row++;
+                }
+            }
+        }
+        
         foreach ($getCheckOrMoneyOrder as $check) {
             $worksheet->setCellValue('F'.($row-1), $check->bank_name);
             $worksheet->setCellValue('G'.($row-1), $check->number);

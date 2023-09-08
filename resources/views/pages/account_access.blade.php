@@ -51,7 +51,7 @@
                                             <td>
                                                 
                                                 @if ($titleItems->title_name == 'Share from National Wealth-Mining')
-                                                    <div></div>
+                                                    <input class="form-control" name="accTitlesAccessLandTax[]" type="checkbox" value="{{ $titleItems->id }}">
                                                 @else
                                                     <input class="form-control" name="accTitlesAccessLandTax[]" type="checkbox" value="{{ $titleItems->id }}">
                                                 @endif
@@ -62,8 +62,6 @@
                                             <td>
                                                 <input class="form-control" name="accTitlesAccessCash[]" type="checkbox" value="{{ $titleItems->id }}">
                                             </td>
-                                            <td></td>
-                                            <td></td>
                                         </tr>
 
                                         @foreach ($accSubtitles as $subItems)
@@ -94,10 +92,8 @@
                                                         @endif
                                                         
                                                     </td>
-                                                    <td></td>
                                                     <td>
                                                         @if($subItems->subtitle == 'Drugs and Medicines-5 District Hospitals' || $subItems->subtitle == 'Accountable Forms/Printed forms' || $subItems->subtitle == 'Sales on Veterinary Products')
-                                                            <input class="form-control" name="subTitlesBudget[]" type="checkbox" value="{{ $subItems->id }}">
                                                             <table class="table tablesorter">
                                                                 @foreach ($accSubSubtitles as $subSub)
                                                                     @if ($subItems->main_id == $subSub->subtitle_id)
@@ -111,14 +107,18 @@
                                                                     @endif
                                                                 @endforeach
                                                             </table>
-                                                        @else
-                                                            <input class="form-control" name="subTitlesBudget[]" type="checkbox" value="{{ $subItems->id }}">
                                                         @endif
                                                         
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>
+                                                        <input class="form-control" name="accTitlesAccessFieldTax[]" type="checkbox" value="{{ $subItems->id }}">
+                                                    </td>
+                                                    <td>
+                                                        <input class="form-control" name="accTitlesAccessFieldTax[]" type="checkbox" value="{{ $subItems->id }}">
+                                                    </td>
+                                                    <td>
+                                                        <input class="form-control" name="accTitlesAccessFieldTax[]" type="checkbox" value="{{ $subItems->id }}">
+                                                    </td>
                                                 </tr>
                                             @endif
                                         @endforeach

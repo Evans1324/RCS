@@ -22,6 +22,7 @@ use App\Models\LandTaxInfo;
 use App\Models\LandTaxAccount;
 use App\Models\Holidays;
 use App\Models\AccountSubSubtitles;
+use App\Models\BankDetails;
 
 
 class PageController extends Controller
@@ -667,7 +668,19 @@ class PageController extends Controller
         $details->save();
         $accounts = LandTaxAccount::where('info_id', $id)->get();
         $accountHtml = '';
-
+        $bankCashCheck = BankDetails::where('bank_id', $id)->get();
+        
+        $bankRemarks = null;
+        $checkName = null;
+        $checkNum = null;
+        $checkDate = null;
+        foreach ($bankCashCheck as $bank) {
+            $bankRemarks = $bank->bank_remarks;
+            $checkName = $bank->bank_name;
+            $checkNum = $bank->bank_number;
+            $checkDate = $bank->bank_date;
+        }
+        // dd($checkName);
         if ($details->date_edited != null) {
             $timeOfTransaction = date('M. j, Y H:i', strtotime($details->date_edited));
         } else {
@@ -772,6 +785,8 @@ class PageController extends Controller
 
         if ($details->transact_type == 'Cash') {
             $transact = '<div class="square-cash"></div>';
+            $transactCash = '';
+            $transactCheck = '';
         } else if ($details->transact_type == 'Check' || $details->transact_type == 'ADA-LBP' || $details->transact_type == 'Bank Deposit/Transer') {
             $transact = '<div class="square-check"></div>'.
             '<div class="bank-info">
@@ -787,9 +802,25 @@ class PageController extends Controller
                     <p>'.$details->transact_date.'</p>
                 </div>
             </div>';
+            $transactCash = '';
+            $transactCheck = '';
         } else if ($details->transact_type == 'Cash & Check') {
-            $transact = '<div class="square-cash"></div>';
-            $transact = '<div class="square-check"></div>';
+            $transact = '';
+            $transactCash = '<div class="square-cash"></div>';
+            $transactCheck = '<div class="square-check"></div>'.
+            '<div class="bank-info">
+                <div class="bank-drawee">
+                    <p>'.$checkName.'</p>
+                </div>
+
+                <div class="bank-number">
+                    <p>'.$checkNum.'</p>
+                </div>
+
+                <div class="bank-date">
+                    <p>'.$checkDate.'</p>
+                </div>
+            </div>';
         } else {
             $transact = '<div class="square-others"></div>
             <div class="bank-info">
@@ -801,6 +832,8 @@ class PageController extends Controller
                     <p>'.$details->transact_date.'</p>
                 </div>
             </div>';
+            $transactCash = '';
+            $transactCheck = '';
         }
 
         $dompdf = new Dompdf();
@@ -1025,6 +1058,12 @@ class PageController extends Controller
             <hr>
             '.$location.'
             <hr>
+
+            <div class="bankRemarks" style="font-size: .8em;">
+                '. $bankRemarks .'
+                <hr>
+            </div>
+
             <div style="font-size: .8em; margin-left: -8%; width: 97%">'. $details->receipt_remarks .'</div>
             <hr>
             '. $booklet .'
@@ -1033,6 +1072,8 @@ class PageController extends Controller
             <p class="num-words">'.$newNum.'</p>
             
             '.$transact.'
+            '.$transactCash.'
+            '.$transactCheck.'
             
             <br>
             <br>

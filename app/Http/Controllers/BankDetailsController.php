@@ -17,7 +17,7 @@ class BankDetailsController extends Controller
             $bank->bank_name = $request->taxColRowBank; 
             $bank->bank_number = $request->taxColRowNumber;
             $bank->bank_date = date('Y-m-d', strtotime($request->taxColRowTransactDate));
-            $bank->bank_remarks = $request->taxColRowBankRemarks;
+            $bank->bank_remarks = $request->bankRemarks;
             $bank->serial_ref = $request->serailNumReference;
             $bank->save();
         } else {
@@ -25,7 +25,7 @@ class BankDetailsController extends Controller
             $bank->bank_name = $request->taxColRowBank; 
             $bank->bank_number = $request->taxColRowNumber;
             $bank->bank_date = date('Y-m-d', strtotime($request->taxColRowTransactDate));
-            $bank->bank_remarks = $request->taxColRowBankRemarks;
+            $bank->bank_remarks = $request->bankRemarks;
             $bank->serial_ref = $request->serailNumReference;
             $bank->save();
         }

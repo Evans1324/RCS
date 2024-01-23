@@ -13,6 +13,7 @@ use App\Models\Serial;
 use App\Models\SpecialCase;
 use App\Models\Holidays;
 use App\Models\BankDetails;
+use App\Models\setRateYear;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -44,8 +45,13 @@ class CollectionsDeposits extends Controller
         $allSum = [];
         $grandTotal = '=';
 
+
         $endDateTS = Date('Y-m-d',strtotime('+1 day', strtotime($request->startDate)));
         $beforeDateTS = Date('Y-m-d',strtotime('-1 day', strtotime($request->startDate)));
+
+        
+
+        
 
         $day = Date('D', strtotime($beforeDateTS));
         $isHoliday = true;
@@ -69,12 +75,26 @@ class CollectionsDeposits extends Controller
             }
         }
         
+
+        // change cut off if last weekday of the year to same day at 5:00 pm
+        $cutoff='12:01:00';
+        $lastDay=new \DateTime('last day of December this year');
+        $dateToday=new \DateTime();
+        $lastWeekDay=Date('Y-m-d', strtotime('last weekday '.$lastDay->format('jS F Y')));
+        if($lastWeekDay===Date('Y')."-12-30"){
+            $lastWeekDay=Date('Y-m-d', strtotime('last weekday 30th December '.Date('Y')));
+        }
+        if($dateToday->format('Y-m-d')===$lastWeekDay){
+            $cutoff='17:01:00';
+        }
+        // last edited
+
         $beginningSerials = Serial::select('land_tax_infos.report_date', 'serial_number', 'start_serial', 'serials.created_at', 'end_serial', 'serials.id', DB::raw('max(land_tax_infos.serial_number) AS latest'))
-        ->whereRaw('land_tax_infos.serial_number < serials.end_serial AND serials.created_at <"'.$beforeDateTS.' 12:01:00" AND land_tax_infos.report_date <= "'.$endDate.'" AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
-        ->orWhereRaw('land_tax_infos.serial_number <= serials.end_serial AND land_tax_infos.report_date <"'.$endDate.'" AND serials.created_at <"'.$beforeDateTS.' 12:01:00" AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
+        ->whereRaw('land_tax_infos.serial_number < serials.end_serial AND serials.created_at <"'.$beforeDateTS.' 12:01:00" AND land_tax_infos.report_date <= "'.$endDate.'" AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
+        ->orWhereRaw('land_tax_infos.serial_number <= serials.end_serial AND land_tax_infos.report_date <"'.$endDate.'" AND serials.created_at <"'.$beforeDateTS.' 12:01:00" AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
         // ->orWhereRaw('land_tax_infos.serial_number <= serials.end_serial AND land_tax_infos.report_date <= "'.$endDate.'" AND land_tax_infos.report_date > '.$dayBefore.' AND serials.created_at <"'.$endDate.'"')
-        ->orWhereRaw('ISNULL(land_tax_infos.report_date) AND serials.created_at <="'.$beforeDateTS.' 12:01:00" AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
-        ->orWhereRaw('land_tax_infos.report_date IS NOT NULL AND serials.created_at <="'.$beforeDateTS.' 12:01:00" AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
+        ->orWhereRaw('ISNULL(land_tax_infos.report_date) AND serials.created_at <="'.$beforeDateTS.' 12:01:00" AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
+        ->orWhereRaw('land_tax_infos.report_date IS NOT NULL AND serials.created_at <="'.$beforeDateTS.' 12:01:00" AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
         ->groupBy('serials.id', 'serials.start_serial', 'serials.end_serial')
         ->orderBy('serials.unit', 'asc')
         ->orderBy('start_serial', 'asc')
@@ -83,11 +103,11 @@ class CollectionsDeposits extends Controller
 
         $startDate = Date('Y-m-d',strtotime($request->endDate));
         $newReceipts = Serial::select('land_tax_infos.report_date', 'start_serial', 'end_serial', 'serials.id', DB::raw('max(land_tax_infos.serial_number) AS latest'))
-        ->whereRaw('serials.created_at >= "'.$endDate.' 12:01:00" AND serials.created_at < "'.$endDateTS.' 12:01:00" AND land_tax_infos.report_date ="'.$startDate.'" AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
-        ->orWhereRaw('serials.created_at >= "'.$endDate.' 12:01:00" AND serials.created_at < "'.$endDateTS.' 12:01:00" AND ISNULL(land_tax_infos.report_date) AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
-        ->orWhereRaw('serials.created_at <= "'.$endDate.' 12:01:00" AND serials.created_at > "'.$beforeDateTS.' 12:01:00" AND land_tax_infos.report_date ="'.$startDate.'" AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
-        ->orWhereRaw('serials.created_at <= "'.$endDate.' 12:01:00" AND serials.created_at > "'.$beforeDateTS.' 12:01:00" AND ISNULL(land_tax_infos.report_date) AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
-        ->orWhereRaw('serials.created_at <= "'.$endDate.' 12:01:00" AND serials.created_at > "'.$beforeDateTS.' 12:01:00" AND land_tax_infos.report_date > "'.$startDate.'" AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
+        ->whereRaw('serials.created_at >= "'.$endDate.' '.$cutoff.'" AND serials.created_at < "'.$endDateTS.' '.$cutoff.'" AND land_tax_infos.report_date ="'.$startDate.'" AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
+        ->orWhereRaw('serials.created_at >= "'.$endDate.' '.$cutoff.'" AND serials.created_at < "'.$endDateTS.' '.$cutoff.'" AND ISNULL(land_tax_infos.report_date) AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
+        ->orWhereRaw('serials.created_at <= "'.$endDate.' '.$cutoff.'" AND serials.created_at > "'.$beforeDateTS.' 12:01:00" AND land_tax_infos.report_date ="'.$startDate.'" AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
+        ->orWhereRaw('serials.created_at <= "'.$endDate.' '.$cutoff.'" AND serials.created_at > "'.$beforeDateTS.' 12:01:00" AND ISNULL(land_tax_infos.report_date) AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
+        ->orWhereRaw('serials.created_at <= "'.$endDate.' '.$cutoff.'" AND serials.created_at > "'.$beforeDateTS.' 12:01:00" AND land_tax_infos.report_date > "'.$startDate.'" AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
         ->groupBy('serials.id', 'serials.start_serial', 'serials.end_serial')
         ->orderBy('serials.unit', 'asc')
         ->orderBy('start_serial', 'asc')
@@ -97,10 +117,10 @@ class CollectionsDeposits extends Controller
         foreach($newReceipts as $new) {
             if ($new->report_date != $endDate) {
                 $validateReceipt = Serial::select('land_tax_infos.report_date', 'start_serial', 'end_serial', 'serials.id', DB::raw('max(land_tax_infos.serial_number) AS latest'))
-                ->whereRaw('serials.id = '.$new->id.' AND serials.created_at >= "'.$endDate.' 12:01:00" AND serials.created_at < "'.$endDateTS.' 12:01:00" AND land_tax_infos.report_date ="'.$startDate.'" AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
-                ->orWhereRaw('serials.id = '.$new->id.' AND serials.created_at >= "'.$endDate.' 12:01:00" AND serials.created_at < "'.$endDateTS.' 12:01:00" AND ISNULL(land_tax_infos.report_date) AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
-                ->orWhereRaw('serials.id = '.$new->id.' AND serials.created_at <= "'.$endDate.' 12:01:00" AND serials.created_at > "'.$beforeDateTS.' 12:01:00" AND land_tax_infos.report_date ="'.$startDate.'" AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
-                ->orWhereRaw('serials.id = '.$new->id.' AND serials.created_at <= "'.$endDate.' 12:01:00" AND serials.created_at > "'.$beforeDateTS.' 12:01:00" AND ISNULL(land_tax_infos.report_date) AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
+                ->whereRaw('serials.id = '.$new->id.' AND serials.created_at >= "'.$endDate.' '.$cutoff.'" AND serials.created_at < "'.$endDateTS.' '.$cutoff.'" AND land_tax_infos.report_date ="'.$startDate.'" AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
+                ->orWhereRaw('serials.id = '.$new->id.' AND serials.created_at >= "'.$endDate.' '.$cutoff.'" AND serials.created_at < "'.$endDateTS.' '.$cutoff.'" AND ISNULL(land_tax_infos.report_date) AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
+                ->orWhereRaw('serials.id = '.$new->id.' AND serials.created_at <= "'.$endDate.' '.$cutoff.'" AND serials.created_at > "'.$beforeDateTS.' 12:01:00" AND land_tax_infos.report_date ="'.$startDate.'" AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
+                ->orWhereRaw('serials.id = '.$new->id.' AND serials.created_at <= "'.$endDate.' '.$cutoff.'" AND serials.created_at > "'.$beforeDateTS.' 12:01:00" AND ISNULL(land_tax_infos.report_date) AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
                 ->groupBy('serials.id', 'serials.start_serial', 'serials.end_serial')
                 ->orderBy('serials.unit', 'asc')
                 ->orderBy('start_serial', 'asc')
@@ -117,7 +137,7 @@ class CollectionsDeposits extends Controller
         $beginningSerialsArray = [];
         foreach($beginningSerials as $new) {
             $validateReceipt = Serial::select('serial_number', 'start_serial', 'serials.created_at', 'end_serial', 'serials.id', DB::raw('max(land_tax_infos.serial_number) AS latest'), 'land_tax_infos.report_date')
-            ->whereRaw('serials.id = '.$new->id.' AND land_tax_infos.serial_number < serials.end_serial AND serials.created_at <"'.$endDate.' 12:01:00" AND land_tax_infos.report_date < "'.$endDate.'" AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
+            ->whereRaw('serials.id = '.$new->id.' AND land_tax_infos.serial_number < serials.end_serial AND serials.created_at <"'.$endDate.' '.$cutoff.'" AND land_tax_infos.report_date < "'.$endDate.'" AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
             ->groupBy('serials.id', 'serials.start_serial', 'serials.end_serial')
             ->orderBy('serials.unit', 'asc')
             ->orderBy('start_serial', 'asc')
@@ -128,7 +148,7 @@ class CollectionsDeposits extends Controller
             //     dd($validateReceipt->serial_number);
             // }
             $validateSeries = Serial::select('serial_number', 'start_serial', 'serials.created_at', 'end_serial', 'serials.id', DB::raw('max(land_tax_infos.serial_number) AS latest'), 'land_tax_infos.report_date')
-            ->whereRaw('serials.id = '.$new->id.' AND land_tax_infos.serial_number < serials.end_serial AND serials.created_at <"'.$endDate.' 12:01:00" AND land_tax_infos.report_date < "'.$endDate.'" AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
+            ->whereRaw('serials.id = '.$new->id.' AND land_tax_infos.serial_number < serials.end_serial AND serials.created_at <"'.$endDate.' '.$cutoff.'" AND land_tax_infos.report_date < "'.$endDate.'" AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND  ISNULL(land_tax_infos.deleted_at)')
             ->groupBy('serials.id', 'serials.start_serial', 'serials.end_serial')
             ->orderBy('serials.unit', 'asc')
             ->orderBy('start_serial', 'asc')
@@ -136,7 +156,7 @@ class CollectionsDeposits extends Controller
             ->first();
             
             $lastSerial = Serial::select('serial_number', DB::raw('max(land_tax_infos.serial_number) AS start_serial'), 'serials.created_at', 'end_serial', 'serials.id', DB::raw('max(land_tax_infos.serial_number) AS latest'), 'land_tax_infos.report_date')
-            ->where([['serials.end_serial', $new->latest], ['report_date', $startDate], ['serials.status', 'Completed']])
+            ->where([['serials.end_serial', $new->latest], ['report_date', $startDate], ['serials.status', 'Completed'], ['serials.form', 'Form 51']])
             ->leftJoin('land_tax_infos', 'serials.id', 'land_tax_infos.series_id')
             ->first();
 
@@ -191,12 +211,26 @@ class CollectionsDeposits extends Controller
         ->whereRaw('land_tax_infos.report_date ="'.$startDate.'"  AND land_tax_infos.receipt_type != "Field Land Tax Collection Cash" AND land_tax_infos.status != "Cancelled"')
         ->leftJoin('land_tax_infos', 'land_tax_infos.id', 'bank_details.bank_id')
         ->leftJoin('land_tax_accounts', 'bank_details.bank_id', 'land_tax_accounts.info_id')
+        ->groupBy('land_tax_accounts.id')
         ->get();
 
-        $getCheckRemarks = BankDetails::select('check', 'report_date', 'bank_details.bank_name', 'bank_details.bank_number', 'amount')
+        // $getCheckRemarks = BankDetails::select('check', 'report_date', 'bank_details.bank_name', 'bank_details.bank_number', 'land_tax_accounts.amount', 'nature')
+        // ->whereRaw('land_tax_infos.report_date ="'.$startDate.'"  AND land_tax_infos.receipt_type != "Field Land Tax Collection Cash" AND land_tax_infos.status != "Cancelled"')
+        // ->leftJoin('land_tax_infos', 'land_tax_infos.id', 'bank_details.bank_id')
+        // ->leftJoin('land_tax_accounts', 'bank_details.bank_id', 'land_tax_accounts.info_id')
+        // ->distinct()
+        // ->get();
+        $getCheckAccs = BankDetails::select('check', 'report_date', 'bank_details.bank_name', 'bank_details.bank_number', 'land_tax_accounts.amount', 'nature')
         ->whereRaw('land_tax_infos.report_date ="'.$startDate.'"  AND land_tax_infos.receipt_type != "Field Land Tax Collection Cash" AND land_tax_infos.status != "Cancelled"')
         ->leftJoin('land_tax_infos', 'land_tax_infos.id', 'bank_details.bank_id')
         ->leftJoin('land_tax_accounts', 'bank_details.bank_id', 'land_tax_accounts.info_id')
+        ->groupBy('land_tax_accounts.id')
+        ->get();
+        $getCheckDetails = BankDetails::select('check', 'report_date', 'bank_details.bank_name', 'bank_details.bank_number', 'land_tax_accounts.amount', 'nature')
+        ->whereRaw('land_tax_infos.report_date ="'.$startDate.'"  AND land_tax_infos.receipt_type != "Field Land Tax Collection Cash" AND land_tax_infos.status != "Cancelled"')
+        ->leftJoin('land_tax_infos', 'land_tax_infos.id', 'bank_details.bank_id')
+        ->leftJoin('land_tax_accounts', 'bank_details.bank_id', 'land_tax_accounts.info_id')
+        ->groupBy('bank_details.id')
         ->get();
 
         $getCheckOrMoneyOrder = LandTaxInfo::select('bank_name', 'number', DB::raw("SUM(CAST(REPLACE(total_amount, ',', '') AS DECIMAL(10,2))) AS total_amount"))
@@ -563,8 +597,8 @@ class CollectionsDeposits extends Controller
             ->join('land_tax_infos', 'land_tax_accounts.info_id', 'land_tax_infos.id')
             ->groupBy('acc_title_id')
             ->get();
-
-            $landTaxAccountSubTitles = LandTaxAccount::where([['info_id', $data->id], ['land_tax_infos.status', '<>' ,'Cancelled']])
+            
+            $landTaxAccountSubTitles = LandTaxAccount::where([['info_id', $data->id], ['sub_title_id', '<>', null], ['land_tax_infos.status', '<>' ,'Cancelled']])
             ->select('sub_title_id', 'account', DB::raw('SUM(amount) AS total'))
             ->join('land_tax_infos', 'land_tax_accounts.info_id', 'land_tax_infos.id')
             ->groupBy('sub_title_id')
@@ -695,9 +729,7 @@ class CollectionsDeposits extends Controller
                 
                 $collectionRate = CollectionRate::where('acc_subtitles_id', $subTitle->acc_subtitle_id)->orderBy('id', 'desc')->first();
                 if ($collectionRate->provincial_share > 0 || $collectionRate->provincial_share != null) {
-                    // if ($collectionRate->provincial_share != null) {
-                    //     $provincialRate = $collectionRate->provincial_share / 100;
-                    // }
+                    /*
                     if ($collectionRate->barangay_share != null) {
                         $barangayRate = $collectionRate->barangay_share / 100;
                         $barangayShare = round(($subTitle->total * $barangayRate), 2);
@@ -763,6 +795,14 @@ class CollectionsDeposits extends Controller
                     }
 
                     $allSum[$tmp] = $allSum[$tmp] + $provincialShare;
+                    */
+                    foreach ($subTitlesColumns as $subtitleCol) {
+                        if (isset($subtitleCol[$tmp]) == true) {
+                            $allSum[$tmp] = $allSum[$tmp] + $subTitle->total;
+                            $worksheet->setCellValue($subtitleCol[$tmp].$row, $subTitle->total);
+                            break;
+                        }
+                    }
                 } else {
                     foreach ($subTitlesColumns as $subtitleCol) {
                         if (isset($subtitleCol[$tmp]) == true) {
@@ -918,9 +958,9 @@ class CollectionsDeposits extends Controller
         
         
         $grandTotal = $grandTotal.'+F'.$row;
-        $worksheet->setCellValue('F'.($row+3), $grandTotal);
+        $worksheet->setCellValue('F'.($row+2), $grandTotal);
 
-        $worksheet->getStyle('F'.($row+3))
+        $worksheet->getStyle('F'.($row+2))
             ->getNumberFormat()
             ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
 
@@ -934,7 +974,7 @@ class CollectionsDeposits extends Controller
             $startDate = Date('Y-m-d', strtotime($request->startDate));
             
             $max = Serial::select('land_tax_infos.report_date', 'start_serial', 'end_serial', DB::raw('max(land_tax_infos.serial_number) AS latest'))
-            ->whereRaw('serials.id ='.$beginning->id.' AND land_tax_infos.report_date ="'.$startDate.'" AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
+            ->whereRaw('serials.id ='.$beginning->id.' AND land_tax_infos.report_date ="'.$startDate.'" AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
             ->groupBy('serials.id', 'serials.start_serial', 'serials.end_serial')
             ->orderBy('serials.unit', 'asc')
             ->orderBy('start_serial', 'asc')
@@ -942,7 +982,7 @@ class CollectionsDeposits extends Controller
             ->first();
 
             $min = Serial::select('land_tax_infos.report_date', 'start_serial', 'end_serial', DB::raw('min(land_tax_infos.serial_number) AS latest'))
-            ->whereRaw('serials.id ='.$beginning->id.' AND land_tax_infos.report_date >="'.$startDate.'" AND land_tax_infos.report_date <="'.$endDate.'" AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
+            ->whereRaw('serials.id ='.$beginning->id.' AND land_tax_infos.report_date >="'.$startDate.'" AND land_tax_infos.report_date <="'.$endDate.'" AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
             ->groupBy('serials.id', 'serials.start_serial', 'serials.end_serial')
             ->orderBy('serials.unit', 'asc')
             ->orderBy('start_serial', 'asc')
@@ -1032,7 +1072,7 @@ class CollectionsDeposits extends Controller
         foreach ($newReceipts as $new) {
             $startDate = Date('Y-m-d', strtotime($request->startDate));
             $max = Serial::select('land_tax_infos.report_date', 'start_serial', 'end_serial', DB::raw('max(land_tax_infos.serial_number) AS latest'))
-            ->whereRaw('serials.id ='.$new->id.' AND land_tax_infos.report_date ="'.$startDate.'" AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
+            ->whereRaw('serials.id ='.$new->id.' AND land_tax_infos.report_date ="'.$startDate.'" AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
             ->groupBy('serials.id', 'serials.start_serial', 'serials.end_serial')
             ->orderBy('serials.unit', 'asc')
             ->orderBy('start_serial', 'asc')
@@ -1040,7 +1080,7 @@ class CollectionsDeposits extends Controller
             ->first();
 
             $min = Serial::select('land_tax_infos.report_date', 'start_serial', 'end_serial', DB::raw('min(land_tax_infos.serial_number) AS latest'))
-            ->whereRaw('serials.id ='.$new->id.' AND land_tax_infos.report_date >="'.$startDate.'" AND land_tax_infos.report_date <="'.$endDate.'" AND ISNULL(serials.assigned_office) AND ISNULL(land_tax_infos.deleted_at)')
+            ->whereRaw('serials.id ='.$new->id.' AND land_tax_infos.report_date >="'.$startDate.'" AND land_tax_infos.report_date <="'.$endDate.'" AND ISNULL(serials.assigned_office) AND serials.form = "Form 51" AND ISNULL(land_tax_infos.deleted_at)')
             ->groupBy('serials.id', 'serials.start_serial', 'serials.end_serial')
             ->orderBy('serials.unit', 'asc')
             ->orderBy('start_serial', 'asc')
@@ -1171,11 +1211,25 @@ class CollectionsDeposits extends Controller
             }
         }
 
-        if ($getCheckRemarks !== 0) {
-            foreach ($getCheckRemarks as $checkRemarks) {
+        // if ($getCheckRemarks !== 0) {
+            // foreach ($getCheckRemarks as $checkRemarks) {
+            //     dump($checkRemarks);
+            //     if ($checkRemarks->check == 'on') {
+                    
+            //         $worksheet->setCellValue('F'.($row-1), $checkRemarks->bank_name);
+            //         $worksheet->setCellValue('G'.($row-1), $checkRemarks->bank_number);
+            //         $worksheet->setCellValue('H'.($row-1), 'Provincial Government of Benguet');
+            //         $worksheet->setCellValue('I'.($row-1), $checkRemarks->amount);
+            //         $worksheet->getStyle('I'.($row-1).':I'.($row+1))->getFont()->setBold(true);
+            //         $row++;
+            //     }
+            // }
+        // }
+
+        if ($getCheckAccs !== 0) {
+            foreach ($getCheckAccs as $checkRemarks) {
                 if ($checkRemarks->check == 'on') {
-                    $worksheet->setCellValue('F'.($row-1), $checkRemarks->bank_name);
-                    $worksheet->setCellValue('G'.($row-1), $checkRemarks->bank_number);
+                    
                     $worksheet->setCellValue('H'.($row-1), 'Provincial Government of Benguet');
                     $worksheet->setCellValue('I'.($row-1), $checkRemarks->amount);
                     $worksheet->getStyle('I'.($row-1).':I'.($row+1))->getFont()->setBold(true);
@@ -1183,6 +1237,19 @@ class CollectionsDeposits extends Controller
                 }
             }
         }
+
+        if ($getCheckDetails !== 0) {
+            foreach ($getCheckDetails as $checkRemarks) {
+                if ($checkRemarks->check == 'on') {
+                    
+                    $worksheet->setCellValue('F'.($row-2), $checkRemarks->bank_name);
+                    $worksheet->setCellValue('G'.($row-2), $checkRemarks->bank_number);
+                    $worksheet->getStyle('I'.($row-2).':I'.($row+1))->getFont()->setBold(true);
+                    $row++;
+                }
+            }
+        }
+        
         
         foreach ($getCheckOrMoneyOrder as $check) {
             $worksheet->setCellValue('F'.($row-1), $check->bank_name);
@@ -1246,7 +1313,8 @@ class CollectionsDeposits extends Controller
         $worksheet->setCellValue('D10', $grandTotal);
         $worksheet->setCellValue('C11', $grandTotalBankDeposit);
         $worksheet->setCellValue('C12', $remittance);
-        $worksheet->setCellValue('D12', $remittance);
+        $worksheet->setCellValue('D12', $remittance + $grandTotalBankDeposit);
+        $worksheet->setCellValue('D13', $remittance + $grandTotalBankDeposit - $grandTotal);
 
         $worksheet->getStyle('C5:C12')->getFont()->setBold(true);
         $worksheet->getStyle('D3:D13')->getFont()->setBold(true);
@@ -1258,15 +1326,19 @@ class CollectionsDeposits extends Controller
             $decimalNumber = $f->format($numWords[1]);
             if ($row >= 14) {
                 $worksheet->setCellValue('C'.($row+4), $wholeNumber.' pesos and '.$decimalNumber.' centavos only (PHP '.$remittance.')');
+                $worksheet->getStyle('C'.($row+4))->getFont()->setUnderline(true);
             } else {
                 $worksheet->setCellValue('C18', $wholeNumber.' pesos and '.$decimalNumber.' centavos only (PHP '.$remittance.')');
+                $worksheet->getStyle('C18')->getFont()->setUnderline(true);
             }
             
         } else {
             if ($row >= 14) {
                 $worksheet->setCellValue('C'.($row+4), $wholeNumber.' pesos only (PHP '.$remittance.'.00)');
+                $worksheet->getStyle('C'.($row+4))->getFont()->setUnderline(true);
             } else {
                 $worksheet->setCellValue('C18', $wholeNumber.' pesos only (PHP '.$remittance.'.00)');
+                $worksheet->getStyle('C18')->getFont()->setUnderline(true);
             }
             
         }

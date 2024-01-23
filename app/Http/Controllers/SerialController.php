@@ -85,7 +85,7 @@ class SerialController extends Controller
             if ($request->taxColReceiptType == 'Land Tax Collection') {
                 $serials = DB::table('access_p_c_s')
                 ->select('serials.*', DB::raw('CONCAT(start_serial,"-", end_serial, " ", unit, " ", acc_category_settings) AS Serial'))
-                ->where([['assigned_ip', $ip], ['process_type', 'Land Tax Collection'], ['serials.id', $request->id]])
+                ->where([['assigned_ip', $ip], ['process_type', 'Land Tax Collection'], ['serials.id', $request->id], ['serials.form', 'Form 51']])
                 ->join('serials', 'access_p_c_s.serial_id', 'serials.id')
                 ->join('posts', 'serials.fund_id', 'posts.id')
                 ->orderBy('serial_id', 'desc')
@@ -94,7 +94,7 @@ class SerialController extends Controller
             } else {
                 $serials = DB::table('serials')
                 ->select('serials.*', DB::raw('CONCAT(start_serial,"-", end_serial, " ", unit, " ", acc_category_settings) AS Serial'))
-                ->where([['unit', 'Pad'], ['serials.id', $request->id], ['serials.status', 'Active']])
+                ->where([['unit', 'Pad'], ['serials.id', $request->id], ['serials.status', 'Active'], ['serials.form', 'Form 51']])
                 ->join('posts', 'serials.fund_id', 'posts.id')
                 ->orderBy('serials.id', 'desc')
                 ->limit(50)
@@ -121,35 +121,126 @@ class SerialController extends Controller
 
     public function getCurrentSerialCash(Request $request) {
         $ip = request()->ip();
-        if ($request->taxColReceiptType == 'Land Tax Collection') {
-            $serials = DB::table('access_p_c_s')
-            ->select('serials.*', DB::raw('CONCAT(start_serial,"-", end_serial, " ", unit, " ", acc_category_settings) AS Serial'))
-            ->where([['assigned_ip', $ip], ['process_type', 'Land Tax Collection'], ['serials.id', $request->id]])
-            ->join('serials', 'access_p_c_s.serial_id', 'serials.id')
-            ->join('posts', 'serials.fund_id', 'posts.id')->orderBy('serial_id', 'desc')->limit(1)->first();
-        } else {
-            $serials = DB::table('serials')
-            ->select('serials.*', DB::raw('CONCAT(start_serial,"-", end_serial, " ", unit, " ", acc_category_settings) AS Serial'))
-            ->where([['unit', 'Pad'], ['serials.id', $request->id], ['assigned_office', 'Cash']])
-            ->join('posts', 'serials.fund_id', 'posts.id')->orderBy('serials.id', 'desc')->limit(50)->first();
-        }
-        
-        $currentSerial = LandTaxInfo::where([['serial_number', '>=', $serials->start_serial], ['serial_number', '<=', $serials->end_serial]])
-        ->orderBy('serial_number', 'desc')
-        ->limit(1)
-        ->first();
-        
-        if ($currentSerial != null) {
-            if ($currentSerial->serial_number == $serials->end_serial) {
-                $currentSerial = 'Serial Error';
+            if ($request->taxColReceiptType == 'Land Tax Collection') {
+                $serials = DB::table('access_p_c_s')
+                ->select('serials.*', DB::raw('CONCAT(start_serial,"-", end_serial, " ", unit, " ", acc_category_settings) AS Serial'))
+                ->where([['assigned_ip', $ip], ['process_type', 'Land Tax Collection'], ['serials.id', $request->id], ['serials.form', 'Form 51'], ['serials.deleted_at', '<>', null]])
+                ->join('serials', 'access_p_c_s.serial_id', 'serials.id')
+                ->join('posts', 'serials.fund_id', 'posts.id')
+                ->orderBy('serial_id', 'desc')
+                ->limit(1)
+                ->first();
             } else {
-                $currentSerial = $currentSerial->serial_number+1;
+                $serials = DB::table('serials')
+                ->select('serials.*', DB::raw('CONCAT(start_serial,"-", end_serial, " ", unit, " ", acc_category_settings) AS Serial'))
+                ->where([['unit', 'Pad'], ['serials.id', $request->id], ['serials.status', 'Active'], ['serials.form', 'Form 51'], ['serials.deleted_at', '<>', null]])
+                ->join('posts', 'serials.fund_id', 'posts.id')
+                ->orderBy('serials.id', 'desc')
+                ->limit(50)
+                ->first();
             }
-        } else {
-            $currentSerial = $serials->start_serial;
-        }
+            
+            $currentSerial = LandTaxInfo::where([['serial_number', '>=', $serials->start_serial], ['serial_number', '<=', $serials->end_serial]])
+            ->orderBy('serial_number', 'desc')
+            ->limit(1)
+            ->first();
+            
+            if ($currentSerial != null) {
+                if ($currentSerial->serial_number == $serials->end_serial) {
+                    $currentSerial = 'Serial Error';
+                } else {
+                    $currentSerial = $currentSerial->serial_number+1;
+                }
+            } else {
+                $currentSerial = $serials->start_serial;
+            }
+            return $currentSerial;
+    }
+
+    public function getSeriesRPT(Request $request) {
+        $ip = request()->ip();
+        $serials = DB::table('serials')
+        ->select('serials.*', 'land_tax_infos.serial_number', 'municipalities.municipality', DB::raw('CONCAT(start_serial,"-", end_serial, " ", municipality) AS Serial'))
+        ->where([['serials.status', 'Active'], ['serials.form', 'Form 56']])
+        ->whereNull('serials.assigned_office')
+        ->leftJoin('municipalities', 'serials.mun_id', 'municipalities.id')
+        ->leftJoin('posts', 'serials.fund_id', 'posts.id')
+        ->leftJoin('land_tax_infos', 'land_tax_infos.series_id', 'serials.id')
+        ->orderBy('serials.id', 'desc')
+        ->groupBy('serials.start_serial')
+        ->limit(70)
+        ->get();
         
-        return $currentSerial;
+        if (count($serials) == 0) {
+            return 'No series found.';
+        } else {
+            $currentSerial = LandTaxInfo::where([['serial_number', '>=', $serials[0]->start_serial], ['serial_number', '<=', $serials[0]->end_serial]])
+            ->orderBy('serial_number', 'desc')
+            ->limit(1)
+            ->first();
+
+            $previousSerial = LandTaxInfo::select('start_serial', 'serial_number')
+            ->where([['unit', 'Pad'], ['serials.status', 'Active']])
+            ->whereNull('serials.assigned_office')
+            ->orderBy('land_tax_infos.id', 'desc')
+            ->leftJoin('serials', 'land_tax_infos.series_id', 'serials.id')
+            ->first();
+            
+            if ($currentSerial != null) {
+                if ($currentSerial->serial_number == $serials[0]->end_serial) {
+                    $currentSerial = 'Serial Error';
+                } else {
+                    $currentSerial = $currentSerial->serial_number+1;
+                }
+            } else {
+                $currentSerial = $serials[0]->start_serial;
+            }
+
+            return [$serials, $currentSerial, $previousSerial];
+        }
+    }
+
+    public function getSeriesSEF(Request $request) {
+        $ip = request()->ip();
+        $serials = DB::table('serials')
+        ->select('serials.*', 'land_tax_infos.serial_number', DB::raw('CONCAT(start_serial,"-", end_serial, " ") AS Serial'))
+        ->where([['serials.status', 'Active'], ['serials.form', 'Form 51'], ['fund_id', 2]])
+        ->whereNull('serials.assigned_office')
+        ->leftJoin('municipalities', 'serials.mun_id', 'municipalities.id')
+        ->leftJoin('posts', 'serials.fund_id', 'posts.id')
+        ->leftJoin('land_tax_infos', 'land_tax_infos.series_id', 'serials.id')
+        ->orderBy('serials.id', 'desc')
+        ->groupBy('serials.start_serial')
+        ->limit(70)
+        ->get();
+        
+        if (count($serials) == 0) {
+            return 'No series found.';
+        } else {
+            $currentSerial = LandTaxInfo::where([['serial_number', '>=', $serials[0]->start_serial], ['serial_number', '<=', $serials[0]->end_serial]])
+            ->orderBy('serial_number', 'desc')
+            ->limit(1)
+            ->first();
+
+            $previousSerial = LandTaxInfo::select('start_serial', 'serial_number')
+            ->where([['unit', 'Pad'], ['serials.status', 'Active']])
+            ->whereNull('serials.assigned_office')
+            ->orderBy('land_tax_infos.id', 'desc')
+            ->leftJoin('serials', 'land_tax_infos.series_id', 'serials.id')
+            ->first();
+            
+            if ($currentSerial != null) {
+                if ($currentSerial->serial_number == $serials[0]->end_serial) {
+                    $currentSerial = 'Serial Error';
+                } else {
+                    $currentSerial = $currentSerial->serial_number+1;
+                }
+            } else {
+                $currentSerial = $serials[0]->start_serial;
+            }
+
+            return [$serials, $currentSerial, $previousSerial];
+        }
     }
 
     public function updateSerialStatus(Request $request) {

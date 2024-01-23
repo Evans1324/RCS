@@ -121,10 +121,13 @@
                     },
                     {
                         'data': 'updated_at'
+                    }, 
+                    {
+                        'data': 'sub_id'
                     }
                 ],
                 "columnDefs": [{
-                    "targets": [1],
+                    "targets": [1, 6],
                     "visible": false,
                 }], 
             });
@@ -139,9 +142,10 @@
             $('#account-subtitles-table tbody').on('click', '.edit', function(e) {
                 var idx = table.row($(this).parents('tr'));
                 var data = table.cells(idx, '').render('display');
-                $('#titleID').val(data[1]);
+                console.log(data);
+                $('#subTitleID').val(data[1]);
                 $('#subTitle').val(data[2]);
-                $('#titleName').val(data[1]);
+                $('#titleName').val(data[6]);
                 $('#titleName').trigger('change');
                 $('#submit-btn-sub').html('Update');
                 $('#clear-btn-sub').removeClass('d-none');
@@ -292,10 +296,13 @@
                     },
                     {
                         'data': 'updated_at'
+                    },
+                    {
+                        'data': 'subs_id'
                     }
                 ],
                 "columnDefs": [{
-                    "targets": [1],
+                    "targets": [1, 6],
                     "visible": false,
                 }], 
             });
@@ -303,10 +310,9 @@
             $('#sub-subtitles-table tbody').on('click', '.edit', function(e) {
                 var idx = table.row($(this).parents('tr'));
                 var data = table.cells(idx, '').render('display');
-                console.log(data);
                 $('#nestedSubtitleID').val(data[1]);
                 $('#nestedSubtitle').val(data[3]);
-                $('#subTitleName').val(data[1]);
+                $('#subTitleName').val(data[6]);
                 $('#subTitleName').trigger('change');
                 $('#submit-btn-nested').html('Update');
                 $('#clear-btn-nested').removeClass('d-none');
@@ -315,7 +321,6 @@
             $('#sub-subtitles-table tbody').on('click', '.delete-btn-cl', function(e) {
                 var idx = table.row($(this).parents('tr'));
                 var data = table.cells(idx, '').render('display');
-                console.log(data);
                 Swal.fire({
                     title: 'Do you want to delete this Title?',
                     showDenyButton: false,

@@ -53,23 +53,72 @@ class RateChangeController extends Controller
         }
         
         $colReset = RateSchedule::where('col_rate_id', $col->id)->whereNotIn('id', $idsArray)->delete();
-
-        // for ($i=0; $i<count($request->collectionLabel); $i++) {
-        //     $collectionRate = new RateSchedule;
-        //     $collectionRate->col_rate_id = $col->id;
-        //     $collectionRate->shared_label = $request->collectionLabel[$i];
-        //     $collectionRate->shared_value = $request->collectionValue[$i];
-        //     $collectionRate->shared_per_unit = $request->collectionPerUnit[$i];
-        //     $collectionRate->shared_unit = $request->collectionUnit[$i];
-        //     $collectionRate->save();
-
-        //     $rateSched = RateSchedule::upsert(
-        //         ['col_rate_id'=>$col->id,'shared_label'=>$request->collectionLabel[$i], 'shared_value'=>$request->collectionValue[$i], 'shared_per_unit'=>$request->collectionPerUnit[$i], 'shared_unit'=>$request->collectionUnit[$i]], 
-        //         ['id', 'col_rate_id'],
-        //         ['shared_label', 'shared_value', 'shared_per_unit', 'shared_per_unit']
-        //     );
-        // }
         $message = 'Rate Updated Successfully';
         return back()->withInput()->with('Message', $message);
+    }
+
+    function accountAccessForm (Request $request) {
+        $n = 1;
+        $typeArrayLand = $request->uncheckedLand;
+        $splitArrayLand = explode(',', $typeArrayLand);
+        $splitArrayLand = array_reverse($splitArrayLand);
+        $latestEntryLand = array_slice($splitArrayLand, 0, $n);
+        $latestEntryLand = array_reverse($latestEntryLand);
+
+        $typeArrayField = $request->uncheckedField;
+        $splitArrayField = explode(',', $typeArrayField);
+        $splitArrayField = array_reverse($splitArrayField);
+        $latestEntryField = array_slice($splitArrayField, 0, $n);
+        $latestEntryField = array_reverse($latestEntryField);
+        
+        $typeArrayCash = $request->uncheckedCash;
+        $splitArrayCash = explode(',', $typeArrayCash);
+        $splitArrayCash = array_reverse($splitArrayCash);
+        $latestEntryCash = array_slice($splitArrayCash, 0, $n);
+        $latestEntryCash = array_reverse($latestEntryCash);
+        // dd($latestEntryLand, $latestEntryField, $latestEntryCash);
+        if ($request->has('accTitlesAccessLandTax')) {
+            for($i=0; $i<count($request->accTitlesAccessLandTax); $i++) {
+                if ($request->accTitlesAccessLandTax[$i]){
+                    $acc_status = CollectionRate::where('acc_titles_id',$request->accTitlesAccessLandTax[$i])->update([ 'status_land' => 1 ]);
+                }
+                //check for subtitles and subsubtitles
+            }
+        }
+
+        if ($request->has('accTitlesAccessFieldTax')) {
+            // dd(2);
+            for($i=0; $i<count($request->accTitlesAccessFieldTax); $i++) {
+                if ($request->accTitlesAccessFieldTax[$i]){
+                    $acc_status = CollectionRate::where('acc_titles_id',$request->accTitlesAccessFieldTax[$i])->update([ 'status_field' => 1 ]);
+                }
+                //check for subtitles and subsubtitles
+            }
+        }
+        
+        if ($request->has('accTitlesAccessCash')) {
+            for($i=0; $i<count($request->accTitlesAccessCash); $i++) {
+                if ($request->accTitlesAccessCash[$i]){
+                    $acc_status = CollectionRate::where('acc_titles_id',$request->accTitlesAccessCash[$i])->update([ 'status_cash' => 1 ]);
+                }
+                //check for subtitles and subsubtitles
+            }
+        }
+        
+        
+        $getAccLand = CollectionRate::where('acc_titles_id', $latestEntryLand)->update(['status_land' => 0]);
+        $getAccField = CollectionRate::where('acc_titles_id', $latestEntryField)->update(['status_field' => 0]);
+        $getAccCash = CollectionRate::where('acc_titles_id', $latestEntryCash)->update(['status_cash' => 0]);
+
+        
+
+    }
+
+    function getActiveAccounts(Request $request) {
+        $getRateChangeYear = RateChange::select('date_of_change')->latest()->first();
+        $getActiveLand = CollectionRate::select('acc_titles_id', 'acc_subtitles_id', 'status_land')->where([['status_land', 1], ['date_of_change', $getRateChangeYear->date_of_change]])->leftJoin('rate_changes', 'collection_rates.rate_change_id', 'rate_changes.id')->get();
+        $getActiveField = CollectionRate::select('acc_titles_id', 'acc_subtitles_id', 'status_field')->where([['status_field', 1], ['date_of_change', $getRateChangeYear->date_of_change]])->leftJoin('rate_changes', 'collection_rates.rate_change_id', 'rate_changes.id')->get();
+        $getActiveCash = CollectionRate::select('acc_titles_id', 'acc_subtitles_id', 'status_cash')->where([['status_cash', 1], ['date_of_change', $getRateChangeYear->date_of_change]])->leftJoin('rate_changes', 'collection_rates.rate_change_id', 'rate_changes.id')->get();
+        return [$getActiveLand, $getActiveField, $getActiveCash];
     }
 }

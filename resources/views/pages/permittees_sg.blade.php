@@ -105,7 +105,7 @@
                             <table class="table tablesorter " id="permittees-table">
                                 <thead class="text-primary">
                                     <tr>
-                                        <th></th>
+                                        <th>Actions</th>
                                         <th>Type</th>
                                         <th>Trade Name</th>
                                         <th>Permittee</th>
@@ -142,7 +142,14 @@
                         }
                     },
                     {
-                        'data': 'type'
+                        'data': 'type',
+                        render: function(data, type, row) {
+                            if (row.type == 6 || row.type == 'Industrial') {
+                                return 'Industrial';
+                            } else {
+                                return 'Commercial';
+                            }
+                        }
                     },
                     {
                         'data': 'trade_name'
@@ -151,10 +158,10 @@
                         'data': 'permittee'
                     },
                     {
-                        'data': 'permitted_area_municipality'
+                        'data': 'municipality'
                     },
                     {
-                        'data': 'permitted_area_barangay'
+                        'data': 'barangay_name'
                     },
                     {
                         'data': 'created_at'

@@ -49,6 +49,7 @@ class procincialIncomeReportController extends Controller
         
         $startOfCollectionAcc = LandTaxInfo::select('land_tax_accounts.acc_title_id','serial_number', 'role', DB::raw('SUM(land_tax_accounts.amount) AS total'))
         ->where([['land_tax_infos.status', '<>', 'Cancelled'], ['land_tax_infos.deleted_at', null], ['land_tax_infos.role', 0]])
+        ->whereMonth('report_date', '=', $request->piMonthStart)
         ->whereBetween('report_date', [$request->piYear.'-01-01', $request->piYear.'-'.$request->piMonthStart.'-31'])
         ->orWhereBetween('role_created', [$nextYear.'-01-01', $nextYear.'-01-31'], ['land_tax_infos.role', 2])
         ->groupBy('land_tax_accounts.acc_title_id')
@@ -717,12 +718,17 @@ class procincialIncomeReportController extends Controller
         $accData = DB::table('account_titles')->select('title_name AS title', 'title_name AS value', 'rate_type AS type', 'fixed_rate', 'percent_value', 'percent_of',  'collection_rates.id')
         ->leftJoin('collection_rates', 'collection_rates.acc_titles_id', 'account_titles.id')
         ->where([['title_name', 'like', '%'.$request->term.'%'],['deleted_at', null]])
-        ->limit(10)->get();
+        ->limit(10)
+        ->groupBy('account_titles.id')
+        ->get();
 
         $accSubData = DB::table('account_subtitles')->select('subtitle AS title', 'subtitle AS value', 'rate_type AS type', 'fixed_rate', 'percent_value', 'percent_of',  'collection_rates.id')
         ->leftJoin('collection_rates', 'collection_rates.acc_subtitles_id', 'account_subtitles.id')
         ->where('subtitle', 'like', '%'.$request->term.'%')
-        ->orderBy('subtitle')->limit(10)->get();
+        ->orderBy('subtitle')
+        ->limit(10)
+        ->groupBy('account_subtitles.id')
+        ->get();
 
         $displayArray = array_merge($accData->toArray(), $accSubData->toArray());
         return ($displayArray);

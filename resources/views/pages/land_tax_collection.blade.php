@@ -18,8 +18,7 @@
                             <div class="row">
                                 <div class="col-sm-3 d-none">
                                     <label for="taxColID">Tax ID</label>
-                                    <input type="text" name="taxColID" class="form-control mb-0 bg-white text-dark"
-                                        id="taxColID">
+                                    <input type="text" name="taxColID" class="form-control mb-0 bg-white text-dark" id="taxColID">
                                 </div>
                             </div>
                             
@@ -109,14 +108,14 @@
 
                                 <div class="col-sm-2">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="clientTypeRadio" id="spousesRadio" />
+                                        <input class="form-check-input" type="radio" name="clientTypeRadio" id="spousesRadio"/>
                                         <label class="form-check-label text-light" for="spousesRadio"> SPS </label>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-2">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="clientTypeRadio" id="companyRadio" />
+                                        <input class="form-check-input" type="radio" name="clientTypeRadio" id="companyRadio" value="Company" />
                                         <label class="form-check-label text-light" for="companyRadio"> Company </label>
                                     </div>
                                 </div>
@@ -345,8 +344,7 @@
 
                                 <div id="taxColBarSelect" class="col-sm-4">
                                     <label class="text-light" for="taxColBarangay">Barangay</label>
-                                    <select readonly class="form-control bg-light text-dark" name="taxColBarangay"
-                                    id="taxColBarangay">
+                                    <select readonly class="form-control bg-light text-dark" name="taxColBarangay" id="taxColBarangay">
                                         <option class="bg-white" value=""></option>
                                     </select>
                                 </div>
@@ -403,12 +401,12 @@
                                                     </td>
 
                                                     <td class="cashRow d-none">
-                                                        <input type="hidden" name="cashRowTrans[]" value="off">
+                                                        <input type="hidden" name="cashRowTransV[]" value="off">
                                                         <input class="cashRowVal" name="cashRowTrans[]" type="checkbox">
                                                     </td>
 
                                                     <td style="width: 8%" class="checkRow d-none">
-                                                        <input type="hidden" name="checkRowTrans[]" value="off">
+                                                        <input type="hidden" name="checkRowTransV[]" value="off">
                                                         <input id="mainCheck" class="checkRowVal" name="checkRowTrans[]" type="checkbox">
                                                         <button type="button" class="btn-primary viewCheck checkBtn d-none">View</button>
                                                     </td>
@@ -519,11 +517,8 @@
                     <form id="check_form" class="col-sm-12">
                         <div class="row">
                             <div class="col-sm-4 d-none">
-                                <label class="text-light" for="bankRowIndex">Row Index</label>
-                                <input type="text" id="bankRowIndex" name="bankRowIndex"
-                                    class="form-control mb-0 bg-white text-dark">
-                                <input type="text" id="bankRowId" name="bankRowId"
-                                    class="form-control mb-0 bg-white text-dark">
+                                <input type="text" id="bankID" name="bankID" class="form-control mb-0 bg-white text-dark">
+                                <input type="text" id="bankRowId" name="bankRowId" class="form-control mb-0 bg-white text-dark">
                             </div>
 
                             <div class="col-sm-4">
@@ -1289,7 +1284,10 @@
             }
         });
 
+        let indivStatus = 0;
+
         $('#individualRadio').on('click', function() {
+            indivStatus = 0;
             $('#client-type-individual').removeClass('d-none');
             $('#client-type-spouse').addClass('d-none');
             $('#client-type-company').addClass('d-none');
@@ -1301,6 +1299,7 @@
         });
 
         $('#spousesRadio').on('click', function() {
+            indivStatus = 1;
             $('#client-type-spouse').removeClass('d-none');
             $('.indiv').addClass('d-none');
             $('#client-type-company').addClass('d-none');
@@ -1309,14 +1308,18 @@
         });
 
         $('#companyRadio').on('click', function() {
+            indivStatus = 2;
             $('.indiv').addClass('d-none');
             $('#client-type-spouse').addClass('d-none');
             $('#client-type-company').removeClass('d-none');
             $('#companyRadio').val('Company');
             $('#taxColCompany').val('');
         });
+
+        let ccMode = false;
         
         $('#landTaxColBtn').on('click', function() {
+            ccMode = false;
             function getDateTime() {
                 var today = new Date();
                 var date = (today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear();
@@ -1422,6 +1425,7 @@
         });
 
         $('#fieldTaxColBtn').click(function() {
+            ccMode = false;
             function getDateTime() {
                 var today = new Date();
                 var date = (today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear();
@@ -1528,6 +1532,7 @@
         
         let message = @json(session('Message'));
         let table = null;
+        let arrType = ['Cash', 'Cash', 'Cash', 'Cash', 'Cash', 'Cash', 'Cash', 'Cash', 'Cash', 'Cash'];
         if (message != null) {
             //Swal.fire(message);
             Swal.fire({
@@ -1811,15 +1816,17 @@
             });
             
             $('#land-tax-table tbody').on('click', '.edit', function(e) {
+                ccMode = true;
                 var idx = table.row($(this).parents('tr'));
-                // var data1 = table.cells(idx, '').render('display');
                 var originalData = table.cells(idx, '').data();
                 var data = table.row( $(this).parents('tr') ).data();
+                
                 $('.modal').css('overflow-y', 'auto');
                 $('#addTaxColModal').modal('show');
                 // $('#taxColEditcurrentDate').val(data.report_date);
                 $('#taxColID').val(originalData[0]);
                 $('#bankRowId').val(originalData[0]);
+                $('#bankID').val(data.bd_id);
                 $('#print-receipt').prop('href', 'printReceipt/' + originalData[0]);
                 $('#taxColReceiptType').val(data.receipt_type);
                 if (data.date_edited == "1970-01-01 08:00:00" || data.date_edited == null) {
@@ -2007,7 +2014,6 @@
                         id: originalData[0]
                     }
                 }).done(function(data) {
-                    console.log(data);
                     let rowCount = data.length - 1;
                     if (data.length > 0) {
                         let taxColAccID = $('.taxColAccountID')[0];
@@ -2016,6 +2022,8 @@
                         let taxColQuantity = $('.taxColQuantity')[0];
                         let taxColAmount = $('.taxColAmount')[0];
                         let taxColTypeRate = $('.taxColTypeRate')[0];
+                        let cashRowVal = $('.cashRowVal')[0];
+                        let checkRowVal = $('.checkRowVal')[0];
                         $(taxColAccID).val(data[0].id);
                         $(taxColAcc).val(data[0].account);
                         $(taxColNature).val(data[0].nature);
@@ -2024,9 +2032,11 @@
                         $(taxColTypeRate).val(data[0].rate_type);
 
                         if (data[0].cash == 'on') {
+                            arrType[0] = "Cash";
                             $('.cashRowVal').prop('checked', true);
                             $('.checkRowVal').prop("checked", false);
                         } else if (data[0].check == 'on') {
+                            arrType[0] = "Check";
                             $('.cashRowVal').prop('checked', false);
                             $('.checkRowVal').prop("checked", true);
                             $('.checkBtn').removeClass('d-none');
@@ -2050,12 +2060,14 @@
                             $(taxColQuantity).val(data[i].quantity);
                             $(taxColAmount).val(data[i].amount);
                             $(taxColTypeRate).val(data[i].rate_type);
-                            if (data[i].cash == 'on') {
+                            if (data[i].cash == 'on' && data[i].check == null) {
+                                arrType[i] = "Cash";
                                 $('.cashRowVal'+[i]).prop('checked', true);
-                                $('.checkRowVal'+[i]).prop("checked", false);
-                            } else if (data[i].check == 'on') {
+                                $('.checkRowVal'+[i]).prop('checked', false);
+                            } else {
+                                arrType[i] = "Check";
+                                $('.checkRowVal'+[i]).prop('checked', true);
                                 $('.cashRowVal'+[i]).prop('checked', false);
-                                $('.checkRowVal'+[i]).prop("checked", true);
                                 $('.viewCheck'+[i]).removeClass('d-none');
                             }
                         }
@@ -3069,6 +3081,7 @@
             let flag = false;
             let totalMonths = 0;
             let calcMonths = 0;
+            console.log('S&G');
 
             if (transactionYear == currentYear) {
                 if (transactionMonth == 1) {
@@ -3583,9 +3596,29 @@
         });
 
         $('#notaryDate').change(function () {
+            let selectedDate = $('#notaryDate').val();
+
+            // Convert the selected date string to a Date object
+            let selectedDateObject = new Date(selectedDate);
+
+            // Get today's date
+            let today = new Date();
+
+            // Calculate the difference in milliseconds
+            let timeDifference = selectedDateObject.getTime() - today.getTime();
+
+            // Convert milliseconds to days
+            let daysDifference = Math.abs(Math.floor(timeDifference / (1000 * 60 * 60 * 24)))-60;
+
+            let monthsTotal = Math.ceil(daysDifference/30);
+
+            // Display the result
+            console.log('Number of days difference:', monthsTotal);
+
             let deadline = moment($(this).val()).add(60, 'days').format('L');
             let deadlineDay = moment($(this).val()).add(60, 'days');
-            let dead = moment($(this).val()).add(60, 'days').format('D');
+            let dead = moment($(this).val()).add(61, 'days').format('D');
+            
             $('#dateOfPenalty').val(deadline);
             let firstRow = $($('#inputRow').find('tr')[0]).find('td input')[2];
             let dateOfPenalty = moment($('#dateOfPenalty').val(), 'MM/DD/YYYY');
@@ -3607,7 +3640,7 @@
             let month = 0;
             let percentage = 0;
             let isDue = true;
-            
+
             if (monthDiff == 0) {
                 monthDiff += 1;
             }
@@ -3616,8 +3649,12 @@
                 totalMonths -= 1;
             }
             
-            month = totalMonths;
+            month = monthsTotal;
             percentage = month*2;
+            if (percentage > 72) {
+                percentage = 72;
+            }
+            /*
             if (parseInt(curr) > parseInt(dead) || parseInt(curr) == parseInt(dead)) {
                 month = month;
                 percentage = percentage;
@@ -3637,14 +3674,28 @@
                 percentage = 0;
                 isDue = false;
             }
+            */
             
-            if (isDue == true) {
-                $('#numOfMonths').val(month);
-                $('#calculatedRate').val(percentage);
+            $('#numOfMonths').val(month);
+            $('#calculatedRate').val(percentage);
+            $('#percentAmount').mask("#00,000,000,000,000.00", {reverse: true});
+            let amountString = $('#percentAmount').val();
+            let value = parseFloat(amountString.replace(/,/g, ""));
+            let firstEqu = 0.00;
+            firstEqu = value * ratePenalty;
+            firstResult = firstEqu + value;
+            SecondEqu = firstResult * percentage / 100;
+            finalValue = firstEqu  + SecondEqu;
+            givenValue = finalValue.toFixed(2);
+            $('#percentValue').val(givenValue.replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#calculatedRate').val(percentage);
+
+            $('#percentAmount').keyup(function () {
                 $('#percentAmount').mask("#00,000,000,000,000.00", {reverse: true});
                 let amountString = $('#percentAmount').val();
                 let value = parseFloat(amountString.replace(/,/g, ""));
                 let firstEqu = 0.00;
+                
                 firstEqu = value * ratePenalty;
                 firstResult = firstEqu + value;
                 SecondEqu = firstResult * percentage / 100;
@@ -3652,51 +3703,7 @@
                 givenValue = finalValue.toFixed(2);
                 $('#percentValue').val(givenValue.replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                 $('#calculatedRate').val(percentage);
-
-                $('#percentAmount').keyup(function () {
-                    $('#percentAmount').mask("#00,000,000,000,000.00", {reverse: true});
-                    let amountString = $('#percentAmount').val();
-                    let value = parseFloat(amountString.replace(/,/g, ""));
-                    let firstEqu = 0.00;
-                    
-                    firstEqu = value * ratePenalty;
-                    firstResult = firstEqu + value;
-                    SecondEqu = firstResult * percentage / 100;
-                    finalValue = firstEqu  + SecondEqu;
-                    givenValue = finalValue.toFixed(2);
-                    $('#percentValue').val(givenValue.replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#calculatedRate').val(percentage);
-                });
-            } else {
-                $('#numOfMonths').val(month);
-                $('#calculatedRate').val(percentage);
-                $('#percentAmount').mask("#00,000,000,000,000.00", {reverse: true});
-                let amountString = $('#percentAmount').val();
-                let value = parseFloat(amountString.replace(/,/g, ""));
-                let firstEqu = 0.00;
-                firstEqu = value * ratePenalty;
-                firstResult = firstEqu + value;
-                SecondEqu = firstResult * percentage / 100;
-                finalValue = firstEqu  + SecondEqu;
-                givenValue = finalValue.toFixed(2);
-                $('#percentValue').val(givenValue.replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                $('#calculatedRate').val(percentage);
-
-                $('#percentAmount').keyup(function () {
-                    $('#percentAmount').mask("#00,000,000,000,000.00", {reverse: true});
-                    let amountString = $('#percentAmount').val();
-                    let value = parseFloat(amountString.replace(/,/g, ""));
-                    let firstEqu = 0.00;
-                    
-                    firstEqu = value * ratePenalty;
-                    firstResult = firstEqu + value;
-                    SecondEqu = firstResult * percentage / 100;
-                    finalValue = firstEqu  + SecondEqu;
-                    givenValue = finalValue.toFixed(2);
-                    $('#percentValue').val(givenValue.replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#calculatedRate').val(percentage);
-                });
-            }
+            });
         });
 
         $('#print-receipt').click(function() {
@@ -3767,12 +3774,7 @@
                 $('#delivery-receipts').removeClass('d-none');
 
                 $('#bookletSG').html('<option class="bg-white" value=""></option>');
-                if ($('#taxColClientType').val() == 6) {
-                    for (let i=1; i<=20; i++) {
-                    $('#bookletSG').html($('#bookletSG').html() +
-                            '<option class="bg-white" value="' + i + '">' + i + '</option>');
-                }
-                } else if ($('#taxColClientType').val() == 7) {
+                if ($('#taxColClientType').val() == 6 || $('#taxColClientType').val() == 7) {
                     for (let i=1; i<=20; i++) {
                     $('#bookletSG').html($('#bookletSG').html() +
                             '<option class="bg-white" value="' + i + '">' + i + '</option>');
@@ -3948,9 +3950,10 @@
                 });
             });
         });
-
+        
         let rowCounter = 1;
         $('#addRowAccount').click(function() {
+            
             let rowID = $('.taxColAccountID').val();
             var html = '';
             html += '<tr class="newRow">';
@@ -3977,17 +3980,17 @@
 
             html += '<td>';
             html += '<input type="text" name="taxColAmount[]" class="taxColAmount form-control mb-0 bg-white text-dark">';
-            html += '</td>'
+            html += '</td>';
 
             if ($('#taxColTransaction').val() == "Cash & Check") {
                 html += '<td>';
-                html += '<input class="cashRow cashRowVal'+rowCounter+' cashChRowID'+rowID+'" type="checkbox" name="cashRowTrans[]">';
+                html += '<input class="cashRow cashRowVal'+rowCounter+' cashRowID'+rowID+'" type="checkbox" name="cashRowTrans[]">';
                 html += '</td>'
 
                 html += '<td style="width: 8%">';
                 html += '<input class="checkRow checkRowVal'+rowCounter+' checkRowID'+rowID+'" type="checkbox" name="checkRowTrans[]">';
-                html += '<button type="button" class="btn-primary viewCheck'+rowCounter+' viewBtnID'+rowID+' checkBtn d-none">View</button>'
-                html += '</td>'
+                html += '<button type="button" class="btn-primary viewCheck'+rowCounter+' viewBtnID'+rowID+' checkBtn d-none">View</button>';
+                html += '</td>';
             }
 
             html += '<td>';
@@ -4005,37 +4008,37 @@
             $('.removeRow').on('click', function() {
                 $(this).closest('tr').remove();
                 $('.taxColAmount').trigger('change');
+                rowCounter = rowCounter - 1;
             });
             
             if (rowID) {
-                console.log(00);
-                $('.cashChRowID'+rowID).click(function() {
+                $('.cashRowID'+rowID).click(function() {
                     if ($(this).prop("checked")) {
-                        $(this).val("Cash");
-                        $('.checkRowID'+rowID).prop('checked', false);
-                        $('.viewBtnID'+rowID).addClass('d-none');
+                        arrType[$(this).closest('tr').index()] =  "Cash";
+                        $('.checkRowVal'+$(this).closest('tr').index()).prop('checked', false);
+                        $('.viewCheck'+$(this).closest('tr').index()).addClass('d-none');
                     } else {
                         $(this).val("");
                     }
                 });
-                
+                let rowCounts = 0;
                 $('.checkRowID'+rowID).click(function() {
-                    $('#check_form')[0].reset();
                     $('#serailNumReference').val($('#serialNumber').val());
-                    let rowCounts = $(this).closest('tr').index();
+                    rowCounts = $(this).closest('tr').index();
                     if ($(this).prop("checked")) {
-                        $(this).val("Check");
+                        arrType[$(this).closest('tr').index()] = "Check";
                         $('#checkModal').modal('show');
-                        $('.viewBtnID'+rowID).removeClass('d-none');
-                        $('.cashChRowID'+rowID).prop('checked', false);
+                        $('.viewCheck'+$(this).closest('tr').index()).removeClass('d-none');
+                        $('.cashRowVal'+$(this).closest('tr').index()).prop('checked', false);
+                        $('#check_form')[0].reset();
                     } else {
                         $(this).val("");
-                        $('.viewBtnID'+rowID).addClass('d-none');
+                        $('.viewCheck'+$(this).closest('tr').index()).addClass('d-none');
                     }
                 });
                 
                 $('.viewBtnID'+rowID).click(function() {
-                    $('#serailNumReference').val($('#serialNumber').val());
+                    
                     $('#checkModal').modal('show');
                     let sRow = $(this).closest('tr').index();
                     $('#check_form')[0].reset();
@@ -4046,30 +4049,36 @@
                         data: {
                             dRowID: $(this).closest('tr').index(),
                             dRow: $('#taxColID').val(),
-                            serial: $('#serialNumber').val()
+                            serial: $('#serialNumber').val(),
                         }
                     }).done(function(data) {
                         let rowNum = data[1];
                         let nRow = data[0];
+                        
                         for (let i = 0; i < nRow.length; i++) {
-                            if (nRow) {
+                            console.log(ccMode);
+                            if (ccMode) {
+                                if (sRow == i) {
+                                $('#bankID').val(nRow[i].b_id);
                                 if (rowNum == sRow) {
                                     $('#taxColRowBank').val(nRow[i].bank_name);
                                     $('#taxColRowNumber').val(nRow[i].bank_number);
                                     $('#taxColRowTransactDate').val(nRow[i].bank_date);
                                     $('#taxColRowBankRemarks').val(nRow[i].bank_remarks);
                                 }
-                            } else {
-                                $('#check_form')[0].reset();
+                                } else {
+                                    $('#check_form')[0].reset();
+                                    
+                                }
                             }
                         }
                     });
+                    $('#serailNumReference').val($('#serialNumber').val());
                 });
             } else {
-                console.log(11);
                 $('.cashRowVal'+rowCounter).click(function() {
                     if ($(this).prop("checked")) {
-                        $(this).val("Cash");
+                        arrType[$(this).closest('tr').index()] =  "Cash";
                         $('.checkRowVal'+rowCounter).prop('checked', false);
                         $('.viewCheck'+rowCounter).addClass('d-none');
                     } else {
@@ -4082,7 +4091,7 @@
                     $('#serailNumReference').val($('#serialNumber').val());
                     let rowCounts = $(this).closest('tr').index();
                     if ($(this).prop("checked")) {
-                        $(this).val("Check");
+                        arrType[$(this).closest('tr').index()] = "Check";
                         $('#checkModal').modal('show');
                         $('.viewCheck'+$(this).closest('tr').index()).removeClass('d-none');
                         $('.cashRowVal'+$(this).closest('tr').index()).prop('checked', false);
@@ -4090,10 +4099,10 @@
                         $(this).val("");
                         $('.viewCheck'+$(this).closest('tr').index()).addClass('d-none');
                     }
+                    rowCounter++;
                 });
                 
                 $('.viewCheck'+rowCounter).click(function() {
-                    $('#serailNumReference').val($('#serialNumber').val());
                     $('#checkModal').modal('show');
                     let sRow = $(this).closest('tr').index();
                     $('#check_form')[0].reset();
@@ -4110,22 +4119,26 @@
                         let rowNum = data[1];
                         let nRow = data[0];
                         for (let i = 0; i < nRow.length; i++) {
-                            if (nRow) {
+                            if (ccMode == false) {
+                                if (nRow) {
                                 if (rowNum == sRow && $('#serialNumber').val() == nRow[i].serial_ref) {
                                     $('#taxColRowBank').val(nRow[i].bank_name);
                                     $('#taxColRowNumber').val(nRow[i].bank_number);
                                     $('#taxColRowTransactDate').val(nRow[i].bank_date);
                                     $('#taxColRowBankRemarks').val(nRow[i].bank_remarks);
                                 }
-                            } else {
-                                $('#check_form')[0].reset();
+                                } else {
+                                    $('#check_form')[0].reset();
+                                }
                             }
+                            
                         }
                     });
+                    $('#serailNumReference').val($('#serialNumber').val());
                 });
-                rowCounter++;
             }
-
+            
+            
             $('.taxColAmount').keyup(function () {
                 $(this).mask("#00,000,000,000,000.00", {reverse: true});
 
@@ -4156,6 +4169,10 @@
                 $('#taxColTotal').val(sum.replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             });
         });
+        //counter reset
+        /*$('.closeBtn').on('click', function() {
+            rowCounter = 1;
+        });*/
 
         $('#addRowPermit').click(function() {
             var html = '';
@@ -4181,7 +4198,7 @@
             html += '</td>'
 
             html += '<td>';
-            html += '<div><button type="button" class=" removeRow btn btn-danger btn-sm mb-4 tim-icons icon-simple-delete"></button></div>';
+            html += '<div><button type="button" class="removeRow btn btn-danger btn-sm mb-4 tim-icons icon-simple-delete"></button></div>';
             html += '</td>';
             html += '</tr>';
 
@@ -4199,7 +4216,7 @@
 
         $('.cashRowVal').click(function() {
             if ($(this).prop("checked")) {
-                $(this).val("Cash");
+                arrType[0] = "Cash";
                 $('.checkRowVal').prop('checked', false);
                 $('.viewCheck').addClass('d-none');
             } else {
@@ -4209,6 +4226,7 @@
         $('.checkRowVal').click(function() {
             $('#serailNumReference').val($('#serialNumber').val());
             if ($(this).prop("checked")) {
+                arrType[0] = "Check";
                 $(this).val("Check");
                 $('#checkModal').modal('show');
                 $('.viewCheck').removeClass('d-none');
@@ -4221,8 +4239,6 @@
 
         $('.viewCheck').click(function() {
             $('#checkModal').modal('show');
-            $('#serailNumReference').val($('#serialNumber').val());
-            
             $.ajax({
                 method: "POST",
                 url: "{{ route('viewCheckDetails') }}",
@@ -4236,17 +4252,18 @@
             }).done(function(data) {
                 let fRow = data[0];
                 letfnRow = data[0][0];
-                if (fRow) {
-                    if (letfnRow.check != null && $('#serialNumber').val() == letfnRow.serial_ref) {
+                if (ccMode) {
+                    if (fRow) {
+                        //$('#check_form')[0].reset();
                         $('#taxColRowBank').val(letfnRow.bank_name);
                         $('#taxColRowNumber').val(letfnRow.bank_number);
                         $('#taxColRowTransactDate').val(letfnRow.bank_date);
                         $('#taxColRowBankRemarks').val(letfnRow.bank_remarks);
                     }
-                } else {
-                    $('#check_form')[0].reset();
                 }
+                
             });
+            $('#serailNumReference').val($('#serialNumber').val());
         });
         
         $('#taxColTransaction').change(function() {
@@ -4303,10 +4320,17 @@
         });
         
         $("#setNewData").on('click', function() {
+            //console.log(arrType);
+            console.log(indivStatus);
+            let firstName = $('#taxColFirstName').val();
+            let lastName = $('#taxColLastName').val();
+            let middleName = $('#taxColMI').val();
             let clientType = $('#taxColClientType').val();
+            let clientId = [2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14];
             let municipality = $('#taxColMunicipality').val();
             let barangay = $('#taxColBarangay').val();
             let revenueData  = $('#land_tax_form').serializeArray();
+            revenueData.push({name:'transactType', value:arrType});
             revenueData.push({name:'bankRemarksRevenue', value:tinymce.get("taxColBankRemarks").getContent()});
             revenueData.push({name:'receiptRemarksRevenue', value:tinymce.get("taxColReceiptRemarks").getContent()});
             let form = $(this);
@@ -4477,6 +4501,7 @@
                             timer: 1500
                         });
                         $('#land-tax-table').DataTable().ajax.reload();
+                        
                     }
                 } else if (result.isDenied) {
                     Swal.fire('Changes are not saved', '', 'info')

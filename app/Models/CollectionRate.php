@@ -26,5 +26,8 @@ class CollectionRate extends Model
         'deadline_status',	
         'rate_after_deadline',	
         'deadline_date',
+        'status_land',
+        'stauts_field',
+        'status_cash'
     ];
 }

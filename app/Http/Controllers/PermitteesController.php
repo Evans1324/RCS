@@ -11,8 +11,13 @@ class PermitteesController extends Controller
 {
     public function saveNewPermitteesRevenueTax(Request $request) {
         $insertPermittees = new SandGravelPermittees;
+        if ($request->type == 6) {
+            $type = 'Industrial';
+        } else {
+            $type = 'Commercial';
+        }
         $insertInfo = $insertPermittees::create(
-            ['type'=>$request->type, 'trade_name'=>$request->tradeName, 'permittee'=>$request->permittees, 'permitted_area_municipality'=>$request->mun, 'permitted_area_barangay'=>$request->bar]
+            ['type'=>$request->type, 'trade_name'=>$type, 'permittee'=>$request->permittees, 'permitted_area_municipality'=>$request->mun, 'permitted_area_barangay'=>$request->bar]
         );
 
         $message = 'Data Saved Succesfuly';

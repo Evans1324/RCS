@@ -6,8 +6,7 @@
             <div class="card-header">
                 <h1 class="card-title">Serial</h1>
             </div>
-            <form name="serial-form" id="serial-form" method="post"
-                action="{{ url('submit_serial_form') }}">
+            <form name="serial-form" id="serial-form" method="post" action="{{ url('submit_serial_form') }}">
                 @csrf
                 <div class="card-body">
                     <div class="col-md-12">
@@ -131,6 +130,22 @@
                                 </div>
                             
                             @elseif (Auth::user()->office == "Revenue")
+                                <div class="col-md-3">
+                                    <label for="serialMunicipality">Municipality</label>
+                                    <select disabled class="edit-input edit-input-56 form-control text-dark" name="serialMunicipality"
+                                        id="serialMunicipality">
+                                        <option class="bg-white" value=""></option>
+                                        @foreach ($municipalities as $mun_items)
+                                            <option class="bg-white" value="{{ $mun_items->id }}">{{ $mun_items->municipality }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label class="text-danger">
+                                        @error('serialMunicipality')
+                                            {{ $message }}
+                                        @enderror
+                                    </label>
+                                </div>
+
                                 <div class="col-md-3">
                                     <label for="accountableOfficer">Accountable Officer (if applicable)</label>
                                     <select class="form-control bg-white text-dark" name="accountableOfficer"
@@ -281,10 +296,10 @@
                             'data': 'municipality'
                         },
                         {
-                            'data': 'acc_officer_id'
+                            'data': 'officers'
                         },
                         {
-                            'data': 'officers'
+                            'data': 'acc_officer_id'
                         },
                         {
                             'data': 'status',
@@ -322,7 +337,7 @@
                     ],
                     "columnDefs": [
                         {
-                            "targets": [1, 7, 11, 14 ],
+                            "targets": [1, 7, 9, 12, 14 ],
                             "visible": false
                         }
                     ],
@@ -390,17 +405,13 @@
                 $('#serialForm').change(function () {
                     let getVal = $(this).val();
                     if (getVal == "Form 51") {
-                        $('#serialUnit').prop('disabled', false);
-                        $('#serialUnit').addClass('bg-white');
-                        $('#serialFund').prop('disabled', false);
-                        $('#serialFund').addClass('bg-white');
+                        $('#serialUnit, #serialFund').prop('disabled', false);
+                        $('#serialUnit, #serialFund').addClass('bg-white');
                         $('#serialMunicipality').prop('disabled', true);
                         $('#serialMunicipality').removeClass('bg-white');
                     } else {
-                        $('#serialUnit').prop('disabled', false);
-                        $('#serialUnit').addClass('bg-white');
-                        $('#serialFund').prop('disabled', false);
-                        $('#serialFund').addClass('bg-white');
+                        $('#serialUnit, #serialFund').prop('disabled', true);
+                        $('#serialUnit, #serialFund').removeClass('bg-white');
                         $('#serialMunicipality').prop('disabled', false);
                         $('#serialMunicipality').addClass('bg-white');
                     }

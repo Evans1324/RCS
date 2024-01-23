@@ -396,17 +396,31 @@ class CashReportController extends Controller
 
                 if ($dh->total_ada != 0.00) {
                     if ($dh->cash != 0.00) {
-                        $worksheet->setCellValue('B'.($row2+2), $split[0]);
-                        $worksheet->setCellValue('C'.($row2+2), $split[1]);
-                        $worksheet->setCellValue('D'.($row2+2), $dh->cash);
-                        $row2++;
+                        if (count($split) == 1) {
+                            $worksheet->setCellValue('B'.($row2+2), $split[0]);
+                            $worksheet->setCellValue('D'.($row2+2), $dh->cash);
+                            $row2++;
+                        } else {
+                            $worksheet->setCellValue('B'.($row2+2), $split[0]);
+                            $worksheet->setCellValue('C'.($row2+2), $split[1]);
+                            $worksheet->setCellValue('D'.($row2+2), $dh->cash);
+                            $row2++;
+                        }
                     }
 
                     if ($dh->check != 0.00) {
-                        $worksheet->setCellValue('B'.($row2+2), $split[0]);
-                        $worksheet->setCellValue('C'.($row2+2), $split[1]);
-                        $worksheet->setCellValue('D'.($row2+2), $dh->check);
-                        $row2++;
+
+                        if (count($split) == 1) {
+                            $worksheet->setCellValue('B'.($row2+2), $split[0]);
+                            $worksheet->setCellValue('D'.($row2+2), $dh->check);
+                            $row2++;
+                        } else {
+                            $worksheet->setCellValue('B'.($row2+2), $split[0]);
+                            $worksheet->setCellValue('C'.($row2+2), $split[1]);
+                            $worksheet->setCellValue('D'.($row2+2), $dh->check);
+                            $row2++;
+                        }
+                        
                     }
 
                     if ($dh->bank_deposit != 0.00) {

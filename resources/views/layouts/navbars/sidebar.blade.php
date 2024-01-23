@@ -41,21 +41,21 @@
                             <li @if ($pageSlug == 'collections_deposits') class="active " @endif>
                                 <a href="{{ route('pages.collections_deposits')  }}">
                                     <i class="tim-icons icon-chart-bar-32"></i>
-                                    <p>{{ __('Collections & Deposits') }}</p>
+                                    <p class="sub-item">{{ __('Collections & Deposits') }}</p>
                                 </a>
                             </li>
 
                             <li @if ($pageSlug == 'sandgravel_monthly_report') class="active " @endif>
                                 <a href="{{ route('pages.sandgravel_monthly_report')  }}">
                                     <i class="tim-icons icon-coins"></i>
-                                    <p>{{ __('S&G Monthly Report') }}</p>
+                                    <p class="sub-item">{{ __('S&G Monthly Report') }}</p>
                                 </a>
                             </li>
 
                             <li @if ($pageSlug == 'provincial_income_report') class="active " @endif>
                                 <a href="{{ route('pages.provincial_income_report')  }}">
                                     <i class="tim-icons icon-chart-bar-32"></i>
-                                    <p>{{ __('Provincial Income Report') }}</p>
+                                    <p class="sub-item">{{ __('Provincial Income Report') }}</p>
                                 </a>
                             </li>
                         </ul>
@@ -74,7 +74,7 @@
                             <li @if ($pageSlug == 'counter_check_reports') class="active " @endif>
                                 <a href="{{ route('pages.counter_check_reports')  }}">
                                     <i class="tim-icons icon-chart-bar-32"></i>
-                                    <p>{{ __('Accounts Daily') }}</p>
+                                    <p class="sub-item">{{ __('Accounts Daily') }}</p>
                                 </a>
                             </li>
                         </ul>
@@ -93,7 +93,14 @@
                             <li @if ($pageSlug == 'property_tax') class="active " @endif>
                                 <a href="{{ route('pages.property_tax')  }}">
                                     <i class="tim-icons icon-double-right"></i>
-                                    <p>{{ __('Real Property Tax') }}</p>
+                                    <p class="sub-item">{{ __('Land Tax RPT Collections') }}</p>
+                                </a>
+                            </li>
+
+                            <li @if ($pageSlug == 'property_tax_sef') class="active " @endif>
+                                <a href="{{ route('pages.property_tax_sef')  }}">
+                                    <i class="tim-icons icon-double-right"></i>
+                                    <p class="sub-item">{{ __('SEF Cash Collections') }}</p>
                                 </a>
                             </li>
                         </ul>
@@ -112,7 +119,7 @@
                             <li @if ($pageSlug == 'cash_collections') class="active " @endif>
                                 <a href="{{ route('pages.cash_collections')  }}">
                                     <i class="tim-icons icon-double-right"></i>
-                                    <p>{{ __('Collections') }}</p>
+                                    <p class="sub-item">{{ __('Collections') }}</p>
                                 </a>
                             </li>
                         </ul>
@@ -155,61 +162,61 @@
                             <li @if ($pageSlug == 'client_input') class="active " @endif>
                                 <a href="{{ route('pages.client_input')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Client Input') }}</p>
+                                    <p class="sub-item">{{ __('Client Input') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'customer_type') class="active " @endif>
                                 <a href="{{ route('pages.customer_type')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Client Type') }}</p>
+                                    <p class="sub-item">{{ __('Client Type') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'contractors') class="active " @endif>
                                 <a href="{{ route('pages.contractors')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Contractors') }}</p>
+                                    <p class="sub-item">{{ __('Contractors') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'permittees_sg') class="active " @endif>
                                 <a href="{{ route('pages.permittees_sg')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Permittees S&G') }}</p>
+                                    <p class="sub-item">{{ __('Permittees S&G') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'permittees_others') class="active " @endif>
                                 <a href="{{ route('pages.permittees_others')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Permittees Others') }}</p>
+                                    <p class="sub-item">{{ __('Permittees Others') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'special_case') class="active " @endif>
                                 <a href="{{ route('pages.special_case')  }}">
                                     <i class="tim-icons icon-delivery-fast"></i>
-                                    <p>{{ __('Special Case') }}</p>
+                                    <p class="sub-item">{{ __('Special Case') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'cutoffs') class="active " @endif>
                                 <a href="{{ route('pages.cutoffs')  }}">
                                     <i class="tim-icons icon-scissors"></i>
-                                    <p>{{ __('Report Cutoff') }}</p>
+                                    <p class="sub-item">{{ __('Report Cutoff') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'district_hospital') class="active " @endif>
                                 <a href="{{ route('pages.district_hospital')  }}">
                                     <i class="tim-icons icon-components"></i>
-                                    <p>{{ __('Hospitals') }}</p>
+                                    <p class="sub-item">{{ __('Hospitals') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'holidays') class="active " @endif>
                                 <a href="{{ route('pages.holidays')  }}">
                                     <i class="tim-icons icon-calendar-60"></i>
-                                    <p>{{ __('Holidays') }}</p>
+                                    <p class="sub-item">{{ __('Holidays') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'report_officer') class="active " @endif>
                                 <a href="{{ route('pages.report_officer')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Report Officers') }}</p>
+                                    <p class="sub-item">{{ __('Report Officers') }}</p>
                                 </a>
                             </li>
                         </ul>
@@ -227,79 +234,79 @@
                             <li @if ($pageSlug == 'serial') class="active " @endif>
                                 <a href="{{ route('pages.serial')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Serial') }}</p>
+                                    <p class="sub-item">{{ __('Serial') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'serial_sg') class="active " @endif>
                                 <a href="{{ route('pages.serial_sg')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Serial SG') }}</p>
+                                    <p class="sub-item">{{ __('Serial SG') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'access_pc') class="active " @endif>
                                 <a href="{{ route('pages.access_pc')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Access PCs') }}</p>
+                                    <p class="sub-item">{{ __('Access PCs') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'form_56') class="active " @endif>
                                 <a href="{{ route('pages.form_56')  }}">
                                     <i class="tim-icons icon-single-copy-04"></i>
-                                    <p>{{ __('Form 56') }}</p>
+                                    <p class="sub-item">{{ __('Form 56') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'account_category_settings') class="active " @endif>
                                 <a href="{{ route('pages.account_category_settings')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Acc. Category Settings') }}</p>
+                                    <p class="sub-item">{{ __('Acc. Category Settings') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'account_group_settings') class="active " @endif>
                                 <a href="{{ route('pages.account_group_settings')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Acc. Group Settings') }}</p>
+                                    <p class="sub-item">{{ __('Acc. Group Settings') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'account_titles') class="active " @endif>
                                 <a href="{{ route('pages.account_titles')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Account Titles') }}</p>
+                                    <p class="sub-item">{{ __('Account Titles') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'account_subtitles') class="active " @endif>
                                 <a href="{{ route('pages.account_subtitles')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Account Subtitles') }}</p>
+                                    <p class="sub-item">{{ __('Account Subtitles') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'account_access') class="active " @endif>
                                 <a href="{{ route('pages.account_access')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Account Access') }}</p>
+                                    <p class="sub-item">{{ __('Account Access') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'budget_estimate') class="active " @endif>
                                 <a href="{{ route('pages.budget_estimate')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Budget Estimate') }}</p>
+                                    <p class="sub-item">{{ __('Budget Estimate') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'collection_rates') class="active " @endif>
                                 <a href="{{ route('pages.collection_rates')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Collection Rates') }}</p>
+                                    <p class="sub-item">{{ __('Collection Rates') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'collection_rates') class="active " @endif>
                                 <a href="{{ route('pages.collection_rates')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Collection Rates') }}</p>
+                                    <p class="sub-item">{{ __('Collection Rates') }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'collection_rates') class="active " @endif>
                                 <a href="{{ route('pages.collection_rates')  }}">
                                     <i class="tim-icons icon-single-02"></i>
-                                    <p>{{ __('Collection Rates') }}</p>
+                                    <p class="sub-item">{{ __('Collection Rates') }}</p>
                                 </a>
                             </li>
                         </ul>

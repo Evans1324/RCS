@@ -2857,24 +2857,26 @@
                     $('#taxColSeries').html('');
                     series.forEach(element => {
                         html += '<option class="bg-white" value="' + element.id + '"';
-                        
-                        if (previousSerial == null) {
-                            html += '>';
-                            $('#series-counter').html(currentSerial);
-                            $('#serialNumber').val(currentSerial);
-                        } else if (element.Serial.includes(previousSerial.start_serial) && element.assigned_office == 'Cash') {
+                        if (element.Serial.includes(previousSerial.start_serial) && element.unit == 'Pad') {
+                            console.log(previousSerial.serial_number);
                             html += 'selected >';
-                            if (previousSerial.serial_number == null) {
-                                $('#series-counter').html(currentSerial);
-                                $('#serialNumber').val(currentSerial);
-                            } else {
+                            $('#series-counter').html(previousSerial.serial_number+1);
+                            $('#serialNumber').val(previousSerial.serial_number+1);
+                        } else {
+                            html += '>';
+                            
+                            if (element.unit == 'Pad') {
                                 $('#series-counter').html(previousSerial.serial_number+1);
                                 $('#serialNumber').val(previousSerial.serial_number+1);
+                            } else {
+                                if (element.serial_number == null) {
+                                    $('#series-counter').html(element.start_serial);
+                                    $('#serialNumber').val(element.start_serial);
+                                } else {
+                                    $('#series-counter').html(element.serial_number+1);
+                                    $('#serialNumber').val(element.serial_number+1);
+                                }
                             }
-                        } else {
-                            $('#series-counter').html(element.start_serial);
-                            $('#serialNumber').val(element.start_serial);
-                            html += '>';
                         }
                         html += element.Serial +'</option>';
                     });

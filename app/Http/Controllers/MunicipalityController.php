@@ -11,20 +11,11 @@ class MunicipalityController extends Controller
 {
     function getMunicipality(Request $request) {
         $displayMun = Municipalities::all();
-        // if ($request->client_type == '6') {
-        //     $displayMun = Municipalities::where('id', $request->id)
-        // } else {
-        //     $displayMun = Municipalities::all();
-        // }
         return $displayMun;    
     }
 
     function getBarangays(Request $request) {
         $data = Barangay::where('mun_id', $request->id)->get();
-        // if ($request->id == 2) {
-        //     $data = Barangay::where('mun_id', $request->id)->get();
-        // }
-        // $data = DB::table('barangays')->where('mun_id', $request->id)->get();
         return $data;
     }
 

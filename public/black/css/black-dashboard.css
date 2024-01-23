@@ -34,6 +34,10 @@
   animation: spin89345 1s linear infinite;
 }
 
+.sub-item {
+  color: #000000;
+}
+
 @keyframes spin89345 {
   0% {
     transform: rotate(0deg);

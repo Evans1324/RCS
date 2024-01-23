@@ -23,7 +23,10 @@ use App\Models\LandTaxAccount;
 use App\Models\Holidays;
 use App\Models\AccountSubSubtitles;
 use App\Models\BankDetails;
-
+use App\Models\Barangay;
+use App\Models\RptMenu;
+use App\Models\RptInfo;
+use App\Models\RptTdrp;
 
 class PageController extends Controller
 {
@@ -127,9 +130,9 @@ class PageController extends Controller
     {
         $display_group_cat = DB::table('account_titles')->select('id', 'title_name')->where('deleted_at', null)->get();
 
-        $acc_subtitles = DB::table('account_subtitles')->select('account_subtitles.id AS main_id', 'account_subtitles.*', 'account_titles.*')->where('account_subtitles.deleted_at', null)->join('account_titles', 'account_subtitles.title_id', 'account_titles.id')->get();
+        $acc_subtitles = DB::table('account_subtitles')->select('account_subtitles.id AS main_id', 'account_subtitles.title_id AS sub_id', 'account_subtitles.*', 'account_titles.*')->where('account_subtitles.deleted_at', null)->join('account_titles', 'account_subtitles.title_id', 'account_titles.id')->get();
 
-        $nested_subtitles = DB::table('account_sub_subtitles')->select('account_subtitles.subtitle AS subtitle', 'account_sub_subtitles.*')->where('account_subtitles.deleted_at', null)->join('account_subtitles', 'account_sub_subtitles.subtitle_id', 'account_subtitles.id')->get();
+        $nested_subtitles = DB::table('account_sub_subtitles')->select('account_subtitles.subtitle AS subtitle', 'account_sub_subtitles.subtitle_id AS subs_id', 'account_sub_subtitles.*')->where('account_subtitles.deleted_at', null)->join('account_subtitles', 'account_sub_subtitles.subtitle_id', 'account_subtitles.id')->get();
 
         return view('pages.account_subtitles', ['acc_subtitles'=>$acc_subtitles, 'display_group_cat'=>$display_group_cat, 'nested_subtitles'=>$nested_subtitles]);
     }
@@ -469,6 +472,7 @@ class PageController extends Controller
                 $templateProcessor->setValue('nature#'.($key+1), str_replace('&', '&amp;', $value->nature));
                 $templateProcessor->setValue('amount#'.($key+1), number_format($value->amount, 2));
             }
+            
             $templateProcessor->setValue('series', $getLandTaxInfo->serial_number);
             $templateProcessor->setValue('signee_name', $signee->name);
             $templateProcessor->setValue('signee_position', $signee->position);
@@ -489,8 +493,8 @@ class PageController extends Controller
             $templateProcessor->setValue('boulders_balance', number_format($boulders, 2));
             
             // $templateProcessor->setValue('processed', number_format(($processed+$getCertData->sg_processed), 2));
-            $templateProcessor->setValue('crushedGravel', number_format(($crushedGravel+$getCertData->sg_processed), 2));
-            $templateProcessor->setValue('crushedSand', number_format(($crushedSand+$getCertData->sg_processed), 2));
+            $templateProcessor->setValue('crushedGravel', number_format(($crushedGravel+$getCertData->sg_crushed_gravel), 2));
+            $templateProcessor->setValue('crushedSand', number_format(($crushedSand+$getCertData->sg_crushed_sand), 2));
             $templateProcessor->setValue('aggregate',  number_format(($aggregate+$getCertData->agg_basecourse), 2));
             $templateProcessor->setValue('river',  number_format(($river+$getCertData->less_sandandgravel), 2));
             $templateProcessor->setValue('boulders',  number_format(($boulders+$getCertData->less_boulders), 2));
@@ -525,7 +529,16 @@ class PageController extends Controller
                 // } else {
                 //     $templateProcessor->setValue('day', Date('jS', strtotime($getLandTaxInfo->report_date)));
                 // }
-                $templateProcessor->setValue('monthYear', Date('F, Y', strtotime($getLandTaxInfo->report_date)));
+
+                $day = date('D');
+                if ($day == 'Fri') {
+                    // $templateProcessor->setValue('monthYear', Date('F, Y', strtotime($getLandTaxInfo->report_date.'-1 month')));
+                    $templateProcessor->setValue('monthYear', Date('F, Y', strtotime($getCertData->cert_date)));
+                } else {
+                    // $templateProcessor->setValue('monthYear', Date('F, Y', strtotime($getLandTaxInfo->report_date)));
+                    $templateProcessor->setValue('monthYear', Date('F, Y', strtotime($getCertData->cert_date)));
+                }
+
                 if ($getCertData->prov_certbidding == 1) {
                     $templateProcessor->setValue('forBidding', '*** For bidding purposes');
                 } else {
@@ -597,7 +610,15 @@ class PageController extends Controller
                 //     $templateProcessor->setValue('day', Date('jS', strtotime($getLandTaxInfo->report_date)));
                 // }
                 
-                $templateProcessor->setValue('monthYear', Date('F, Y', strtotime($getLandTaxInfo->report_date)));
+                $day = date('D');
+                if ($day == 'Fri') {
+                    // $templateProcessor->setValue('monthYear', Date('F, Y', strtotime($getLandTaxInfo->report_date.'-1 month')));
+                    $templateProcessor->setValue('monthYear', Date('F, Y', strtotime($getCertData->cert_date)));
+                } else {
+                    // $templateProcessor->setValue('monthYear', Date('F, Y', strtotime($getLandTaxInfo->report_date)));
+                    $templateProcessor->setValue('monthYear', Date('F, Y', strtotime($getCertData->cert_date)));
+                }
+                
                 if ($getCertData->prov_certbidding == 1) {
                     $templateProcessor->setValue('forBidding', '*** For bidding purposes');
                 } else {
@@ -668,19 +689,14 @@ class PageController extends Controller
         $details->save();
         $accounts = LandTaxAccount::where('info_id', $id)->get();
         $accountHtml = '';
-        $bankCashCheck = BankDetails::where('bank_id', $id)->get();
+        $bankCashCheck = BankDetails::where('bank_id', $id)->groupBy('bank_number')->get();
         
         $bankRemarks = null;
         $checkName = null;
         $checkNum = null;
         $checkDate = null;
-        foreach ($bankCashCheck as $bank) {
-            $bankRemarks = $bank->bank_remarks;
-            $checkName = $bank->bank_name;
-            $checkNum = $bank->bank_number;
-            $checkDate = $bank->bank_date;
-        }
-        // dd($checkName);
+        
+        
         if ($details->date_edited != null) {
             $timeOfTransaction = date('M. j, Y H:i', strtotime($details->date_edited));
         } else {
@@ -690,10 +706,13 @@ class PageController extends Controller
         foreach ($accounts as $acc) {
             if ($acc->account == 'Tax on Sand, Gravel & Other Quarry Prod.') {
                 $accountHtml = $accountHtml.'<div class="sg-title"><p><b>Sand and Gravel Tax:</b></p></div>'.'<div class="container"><p class="receipt-left">'.$acc->nature.'</p> <p class="receipt-right"> '.number_format($acc->amount, 2).'</p></div>';
+            } else if ($acc == 'General (Buildings/Lots/Light & Water)' || $acc == 'Benguet Cold Chain Operation' || $acc == 'Lodging (OPAG)' || $acc == 'Provincial Health Office (PHO)') {
+                $accountHtml = $accountHtml.'<div class="sg-title"><p><b>Rent Income:</b></p></div>'.'<div class="container"><p class="receipt-left">'.$acc->nature.'</p> <p class="receipt-right"> '.number_format($acc->amount, 2).'</p></div>';
             } else {
                 $accountHtml = $accountHtml.'<div class="container"><p class="receipt-left">'.$acc->nature.'</p> <p class="receipt-right"> '.number_format($acc->amount, 2).'</p></div>';
             }
         }
+
         if ($details->client_type_id == '2' || $details->client_type_id == '3' || $details->client_type_id == '14') {
             if ($details->business_name == null) {
                 $payor = $details->owner;
@@ -783,12 +802,304 @@ class PageController extends Controller
             $newNum = $f->format($numberArray[0]).' pesos only';
         }
 
+        $dompdf = new Dompdf();
+        $html = '<style type="text/css">
+                    body {
+                        font-family: Helvetica;
+                    }
+
+                    .container {
+                        display: flex;
+                        padding: 0;
+                        margin: 0;
+                    }
+
+                    .receipt-left {
+                        text-align: left;
+                        width: 70%;
+                    }
+
+                    .receipt-right {
+                        text-align: right;
+                        margin-right: 11%;
+                    }
+
+                    .upper-section {
+                        margin-left: 12px;
+                        margin-top: 56;
+                    }
+
+                    .date {
+                        font-size: .9em;
+                        margin-bottom: 15px;
+                    }
+
+                    .lower-section {
+                        position: absolute;
+                        top: 510;
+                        right: 30;
+                    }
+
+                    .payor-section {
+                        padding-top: 8px;
+                        margin-left: 15px;
+                    }
+
+                    .payor {
+                        float: left;
+                        font-size: .91em;
+                        padding-left: 1px;
+                        margin: 0;
+                        width: 88%;
+                        line-height: .81;
+                    }
+
+                    .sg-title {
+                        position: absolute;
+                        top: 133;
+                        margin: 0 0 0 -5.2%;
+                    }
+
+                    .natureColl {
+                        padding-top: 18%;
+                    }
+
+                    .natureColl p {
+                        margin-top: -4%;
+                        margin-left: -8%;
+                        padding-right: 2%;
+                    }
+
+                    p { /*Nature of collection */
+                        font-size: .76em;
+                    }
+
+                    .mun-bar {
+                        margin: 0 0 .5% -8%;
+                        padding: 0;
+                    }
+
+                    .mun-bar p {
+                        font-size: .8em;
+                        font-weight: bold;
+                    }
+
+                    .collecting-officer {
+                        position: relative;
+                        top: -2;
+                        right: 5;
+                        font-size: .9em;
+                    }
+
+                    .collector-title {
+                        position: relative;
+                        top: -8;
+                        left: 8;
+                        font-size: .8em;
+                    }
+
+                    hr {
+                        border: none;
+                        border-top: 1px dotted #000;
+                        color: #fff;
+                        background-color: #fff;
+                        height: 2px;
+                        width: 95%;
+                        margin: 1% 0 .5% -8%;
+                    }
+
+                    .d-none {
+                        margin-left: 1000%;
+                    }
+
+                    .total-amount {
+                        position: absolute;
+                        top: 394;
+                        margin-right: 11%;
+                        float: right;
+                        font-size: .9em;
+                    }
+
+                    .num-words {
+                        position: absolute;
+                        top: 425;
+                        left: -20;
+                        width: 100%;
+                        line-height: .81
+                    }
+
+                    .square-cash {
+                        position: absolute;
+                        bottom: 82;
+                        left: -22;
+                        //margin-left: -1.5%;
+                        height: 15px;
+                        width: 25px;
+                        background-color: #000;
+                    }
+
+                    .square-check {
+                        position: absolute;
+                        bottom: 62;
+                        left: -25;
+                        height: 15px;
+                        width: 25px;
+                        background-color: #000;
+                    }
+
+                    .bank-drawee {
+                        position: absolute;
+                        left: 74;
+                        bottom: 52;
+                    }
+
+                    .bank-drawee p {
+                        font-size: .7em;
+                        width: 75%;
+                    }
+
+                    .bank-number {
+                        position: absolute;
+                        left: 150;
+                        bottom: 58;
+                    }
+
+                    .bank-number p {
+                        font-size: .7em;
+                    }
+
+                    .bank-date {
+                        position: absolute;
+                        /*width: 30%;*/
+                        left: 197;
+                        bottom: 58;
+                    }
+
+                    .bank-date p {
+                        font-size: .7em;
+                    }
+
+                    .square-others {
+                        position: absolute;
+                        bottom: 46;
+                        left: -22;
+                        height: 15px;
+                        width: 25px;
+                        background-color: #000;
+                    }
+                    
+                    .bank-deposit-number {
+                        position: absolute;
+                        left: 157;
+                        bottom: 43;
+                    }
+
+                    .bank-deposit-date {
+                        position: absolute;
+                        width: 30%;
+                        left: 197;
+                        bottom: 43;
+                    }
+
+                    .bank-deposit-number p {
+                        font-size: .7em;
+                    }
+
+                    .bank-deposit-date p {
+                        font-size: .7em;
+                    }
+
+                    .bank-drawee1 {
+                        position: relative;
+                        top: -5;
+                    }
+
+                    .bank-drawee3 {
+                        position: relative;
+                        top: 20;
+                    }
+
+                    .bank-drawee5 {
+                        position: relative;
+                        top: 25;
+                    }
+
+                    .bank-drawee7 {
+                        position: relative;
+                        top: 35;
+                    }
+
+                    .bank-num1 {
+                        position: relative;
+                        top: 0;
+                    }
+
+                    .bank-num3 {
+                        position: relative;
+                        top: 20;
+                    }
+
+                    .bank-num5 {
+                        position: relative;
+                        top: 25;
+                    }
+
+                    .bank-num7 {
+                        position: relative;
+                        top: 35;
+                    }
+
+                    .bank-date1 {
+                        position: relative;
+                        top: 0;
+                    }
+
+                    .bank-date3 {
+                        position: relative;
+                        top: 20;
+                    }
+
+                    .bank-date5 {
+                        position: relative;
+                        top: 30;
+                    }
+
+                    .bank-date7 {
+                        position: relative;
+                        top: 40;
+                    }
+                </style>';
+        $html .= '<div class="body">
+        <div class="upper-section">
+            <p class="date">'.$timeOfTransaction.'</p>
+        </div>
+
+        <div class="payor-section">
+            <p class="payor">'.$payor.'</p>
+        </div>
+
+        <div class="natureColl"><p>'.$accountHtml.'</p></div>
+        <hr>
+        '.$location.'
+        <hr>
+
+        <div class="bankRemarks" style="font-size: .8em;">
+            '. $bankRemarks .'
+            <hr>
+        </div>
+
+        <div style="font-size: .8em; margin-left: -8%; width: 97%">'. $details->receipt_remarks .'</div>
+        <hr>
+        '. $booklet .'
+        
+        <p class="total-amount">Php '.$details->total_amount.'</p>
+        <p class="num-words">'.$newNum.'</p>';
+                    
+                    
         if ($details->transact_type == 'Cash') {
-            $transact = '<div class="square-cash"></div>';
-            $transactCash = '';
-            $transactCheck = '';
+            $html .= '<div class="square-cash"></div>';
         } else if ($details->transact_type == 'Check' || $details->transact_type == 'ADA-LBP' || $details->transact_type == 'Bank Deposit/Transer') {
-            $transact = '<div class="square-check"></div>'.
+            $html .= '<div class="square-check"></div>'.
             '<div class="bank-info">
                 <div class="bank-drawee">
                     <p>'.$details->bank_name.'</p>
@@ -802,292 +1113,387 @@ class PageController extends Controller
                     <p>'.$details->transact_date.'</p>
                 </div>
             </div>';
-            $transactCash = '';
-            $transactCheck = '';
         } else if ($details->transact_type == 'Cash & Check') {
-            $transact = '';
-            $transactCash = '<div class="square-cash"></div>';
-            $transactCheck = '<div class="square-check"></div>'.
-            '<div class="bank-info">
-                <div class="bank-drawee">
-                    <p>'.$checkName.'</p>
-                </div>
+            $counter = 0;
+            $ccState = false;
+            foreach ($bankCashCheck as $bank) {
+                $bankRemarks = $bank->bank_remarks;
+                $checkName = $bank->bank_name;
+                $checkNum = $bank->bank_number;
+                $checkDate = $bank->bank_date;
+                foreach($accounts as $accTrans) {
 
-                <div class="bank-number">
-                    <p>'.$checkNum.'</p>
-                </div>
+                    if ($accTrans->check == 'on' || $accTrans->cash == 'on') {
+                        $ccState = true;
+                    }
+                    
+                    if ($accTrans->cash == null) {
+                        
+                        if ($counter % 2 == 0) {
+                            $counter++;
+                            if ($counter == 1) {
+                                $html .= '<div class="square-cash"></div>'; // remove this if cash still exists in an all check Cash & Check transaction
+                                $html .= '<div>
+                                    <div class="square-check"></div>'.
+                                    '<div class="bank-info">
+                                        <div class="bank-drawee">
+                                            <p class="bank-drawee'.$counter.'">'.$checkName.'</p>
+                                        </div>
+    
+                                        <div class="bank-number">
+                                            <p class="bank-num'.$counter.'">'.$checkNum.'</p>
+                                        </div>
+    
+                                        <div class="bank-date">
+                                            <p class="bank-date'.$counter.'">'.$checkDate.'</p>
+                                        </div>
+                                    </div>
+                                </div><br>';
+                                $counter++;
+                            }
+                            continue;
+                        }
 
-                <div class="bank-date">
-                    <p>'.$checkDate.'</p>
-                </div>
-            </div>';
+                        if ($ccState) {
+                            $html .= '<div class="square-cash"></div>';
+                            $html .= '<div>
+                                    <div class="square-check"></div>'.
+                                    '<div class="bank-info">
+                                        <div class="bank-drawee">
+                                            <p class="bank-drawee'.$counter.'">'.$checkName.'</p>
+                                        </div>
+    
+                                        <div class="bank-number">
+                                            <p class="bank-num'.$counter.'">'.$checkNum.'</p>
+                                        </div>
+    
+                                        <div class="bank-date">
+                                            <p class="bank-date'.$counter.'">'.$checkDate.'</p>
+                                        </div>
+                                    </div>
+                                </div><br>';
+                                $counter++;
+                        } else {
+                            $html .= '<div>
+                                    <div class="square-check"></div>'.
+                                    '<div class="bank-info">
+                                        <div class="bank-drawee">
+                                            <p class="bank-drawee'.$counter.'">'.$checkName.'</p>
+                                        </div>
+    
+                                        <div class="bank-number">
+                                            <p class="bank-num'.$counter.'">'.$checkNum.'</p>
+                                        </div>
+    
+                                        <div class="bank-date">
+                                            <p class="bank-date'.$counter.'">'.$checkDate.'</p>
+                                        </div>
+                                    </div>
+                                </div><br>';
+                                $counter++;
+                        }
+                    }
+                }
+            }
+            
         } else {
-            $transact = '<div class="square-others"></div>
+            $html .= '<div class="square-others"></div>
             <div class="bank-info">
                 <div class="bank-deposit-number">
                     <p>'.$details->number.'</p>
                 </div>
-                
+
                 <div class="bank-deposit-date">
                     <p>'.$details->transact_date.'</p>
                 </div>
             </div>';
-            $transactCash = '';
-            $transactCheck = '';
         }
 
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml('
-        <style type="text/css">
-            body {
-                font-family: Helvetica;
-            }
+        $html .= '<br>
+                    <br>
+                    <br>
 
-            .container {
-                display: flex;
-                padding: 0;
-                margin: 0;
-            }
+                    <div class="lower-section">
+                        <p class="collecting-officer">IMELDA I. MACANES</p>
+                        <p class="collector-title">Provincial Treasurer</p>
+                    </div>
+                </div>';
 
-            .receipt-left {
-                text-align: left;
-                width: 70%;
-            }
-
-            .receipt-right {
-                text-align: right;
-                margin-right: 11%;
-            }
-
-            .upper-section {
-                margin-left: 12px;
-                margin-top: 56;
-            }
-
-            .date {
-                font-size: .9em;
-                margin-bottom: 15px;
-            }
-
-            .lower-section {
-                position: absolute;
-                top: 510;
-                right: 30;
-            }
-
-            .payor-section {
-                padding-top: 8px;
-                margin-left: 15px;
-            }
-
-            .payor {
-                float: left;
-                font-size: .91em;
-                padding-left: 1px;
-                margin: 0;
-                width: 88%;
-                line-height: .81;
-            }
-
-            .sg-title {
-                position: absolute;
-                top: 133;
-                margin: 0 0 0 -5.2%;
-            }
-
-            .natureColl {
-                padding-top: 18%;
-            }
-
-            .natureColl p {
-                margin-top: -4%;
-                margin-left: -8%;
-                padding-right: 2%;
-            }
-
-            p { /*Nature of collection */
-                font-size: .76em;
-            }
-
-            .mun-bar {
-                margin: 0 0 .5% -8%;
-                padding: 0;
-            }
-
-            .mun-bar p {
-                font-size: .8em;
-                font-weight: bold;
-            }
-
-            .collecting-officer {
-                position: relative;
-                top: -2;
-                right: 5;
-                font-size: .9em;
-            }
-
-            .collector-title {
-                position: relative;
-                top: -8;
-                left: 8;
-                font-size: .8em;
-            }
-
-            hr {
-                border: none;
-                border-top: 1px dotted #000;
-                color: #fff;
-                background-color: #fff;
-                height: 2px;
-                width: 95%;
-                margin: 1% 0 .5% -8%;
-            }
-
-            .d-none {
-                margin-left: 1000%;
-            }
-
-            .total-amount {
-                position: absolute;
-                top: 394;
-                margin-right: 11%;
-                float: right;
-                font-size: .9em;
-            }
-
-            .num-words {
-                position: absolute;
-                top: 425;
-                left: -20;
-                width: 100%;
-                line-height: .81
-            }
-
-            .square-cash {
-                position: absolute;
-                bottom: 82;
-                left: -22;
-                //margin-left: -1.5%;
-                height: 15px;
-                width: 25px;
-                background-color: #000;
-            }
-
-            .square-check {
-                position: absolute;
-                bottom: 62;
-                left: -25;
-                height: 15px;
-                width: 25px;
-                background-color: #000;
-            }
-
-            .bank-drawee {
-                position: absolute;
-                left: 74;
-                bottom: 52;
-            }
-
-            .bank-drawee p {
-                font-size: .7em;
-                width: 75%;
-            }
-
-            .bank-number {
-                position: absolute;
-                left: 150;
-                bottom: 58;
-            }
-
-            .bank-number p {
-                font-size: .7em;
-            }
-
-            .bank-date {
-                position: absolute;
-                width: 30%;
-                left: 197;
-                bottom: 58;
-            }
-
-            .bank-date p {
-                font-size: .7em;
-            }
-
-            .square-others {
-                position: absolute;
-                bottom: 46;
-                left: -22;
-                height: 15px;
-                width: 25px;
-                background-color: #000;
-            }
-            
-            .bank-deposit-number {
-                position: absolute;
-                left: 157;
-                bottom: 43;
-            }
-
-            .bank-deposit-date {
-                position: absolute;
-                width: 30%;
-                left: 197;
-                bottom: 43;
-            }
-
-            .bank-deposit-number p {
-                font-size: .7em;
-            }
-
-            .bank-deposit-date p {
-                font-size: .7em;
-            }
-        </style>
-        
-        <div class="body">
-            <div class="upper-section">
-                <p class="date">'.$timeOfTransaction.'</p>
-            </div>
-            
-            <div class="payor-section">
-                <p class="payor">'.$payor.'</p>
-            </div>
-            
-            <div class="natureColl"><p>'.$accountHtml.'</p></div>
-            <hr>
-            '.$location.'
-            <hr>
-
-            <div class="bankRemarks" style="font-size: .8em;">
-                '. $bankRemarks .'
-                <hr>
-            </div>
-
-            <div style="font-size: .8em; margin-left: -8%; width: 97%">'. $details->receipt_remarks .'</div>
-            <hr>
-            '. $booklet .'
-            
-            <p class="total-amount">Php '.$details->total_amount.'</p>
-            <p class="num-words">'.$newNum.'</p>
-            
-            '.$transact.'
-            '.$transactCash.'
-            '.$transactCheck.'
-            
-            <br>
-            <br>
-            <br>
-            
-            <div class="lower-section">
-                <p class="collecting-officer">IMELDA I. MACANES</p>
-                <p class="collector-title">Provincial Treasurer</p>
-            </div>
-        </div>
-        ');
+        $dompdf->loadHtml($html);
         
         // (Optional) Setup the paper size and orientation
         $dompdf->setPaper(array(0,0,342.9921,623.622), 'portrait');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser
+        $dompdf->stream(
+            'file.pdf',
+            array(
+              'Attachment' => 0
+            )
+        );
+    }
+
+    /**
+     * Print Receipt template page
+     *
+     * @return \Illuminate\View\View
+     */
+    public function printReceiptRPT($id) {
+        $rptInfo = RptInfo::leftJoin('municipalities', 'rpt_infos.municipality_id', 'municipalities.id')
+        ->leftJoin('barangays', 'rpt_infos.barangay_id', 'barangays.id')
+        ->leftJoin('rpt_previous_receipts', 'rpt_infos.id', 'rpt_previous_receipts.prev_rpt_id')
+        ->leftJoin('rpt_menus', function($join){
+            $join->on('rpt_infos.tax_type', '=', 'rpt_menus.id');
+            $join->on('rpt_infos.transaction_type', '=', 'rpt_menus.id');
+        })
+        ->find($id);
+
+        $tdrp = RptTDRP::where('rpt_id', $id)
+        ->leftJoin('barangays', 'rpt_tdrps.barangay_id', 'barangays.id')
+        ->leftjoin('rpt_menus', 'rpt_tdrps.classification', 'rpt_menus.id')
+        ->get();
+
+        $f = new \NumberFormatter("en", \NumberFormatter::SPELLOUT);
+        $totalAmount = $rptInfo->amount;
+        $remittance = number_format($totalAmount, 2);
+        $numWords = explode('.', strval($remittance));
+        $wholeNumber = $f->format(str_replace(',', '', $numWords[0]));
+        
+        $decimalNumber = $totalAmount;
+        $fractionalPart = $decimalNumber - floor($decimalNumber);
+        $decimalInFractionFormat = number_format($fractionalPart, 2, '.', '') * 100 . '/100';
+        if ($decimalInFractionFormat == 0) {
+            $fractionDisplay = $wholeNumber.' only';
+        } else {
+            $fractionDisplay = $wholeNumber.' and '.$decimalInFractionFormat.' only';
+        }
+
+        $period = null;
+        $lastData = null;
+        foreach ($tdrp as $key => $td) {
+            // $lastDataYear = $td->period_covered;
+            
+            if ($period === null) {
+                $period = $lastData = '<span>'.$td->period_covered.'</span>';
+                
+            } else {
+                $period = '<span class="periodCovered">'.$td->period_covered.'</span> - <span class="periodCovered">'.$lastData.'</span>';
+            }
+            
+        }
+
+        $payment = 0;
+        $decalredOwner = $barangay = $aprNo = '';
+        $dompdf = new Dompdf();
+        $html = '
+            <style type="text/css">
+                body {font-family: Helvetica;font-size: 11px;}
+                .fLayer {position:relative; right:130; bottom:15px; text-align:right;}
+                .sLayer {position: absolute;left: 250;top: 15px;font-style: bold;font-size: 12.5px;}
+                .tLayer {text-align: right;position: absolute;right: -5;top: 18;width: 80%;font-size: 12px;}
+                .prevDate {padding-right: 10%;}
+                .prevYear {padding-right: 10%;}
+                .frLayer {position: absolute;top: 50;font-size: 12px;}
+                .numWords {position: absolute;left: 240;width: 99px;}
+                .totalUp {position: absolute;left: 635;font-size: 13px;}
+                .ffLayer {text-align: right;position: relative;top: 55;right: 158;font-size: 13px;}
+                .stLayer {position: relative;top: 88;font-size: 12px;left: -10;}
+                .totalCash{position: absolute; bottom: 50; font-size: 13px; right: -5;}
+                .totalCheck{position: absolute; bottom: 50; font-size: 13px; right: -5;}
+                .modeCash{position: absolute; bottom: 30; font-size: 13px; right: 370;}
+                .modeCheck{position: absolute; bottom: 20; font-size: 13px; right: 370;}
+                .total3{position: absolute; bottom: -5; font-size: 13px; right: 370;}
+                .periodCovered{font-size: 12px;}
+                .period{position:relative; left: 470;}
+                .signatoryLeft{position:absolute; right:220px; bottom:10;}
+                .signatory1{padding-left: 15px; font-size: 13px;}
+                .title1{font-size: 13px;}
+                .signatoryRight{position:absolute; right:7px; bottom:6;}
+                .signatory2{font-size: 13px;}
+                .title2{padding-left:5px; font-size: 13px;}
+                
+                .tg {border-collapse:collapse;border-spacing:0; }
+                .tg td{/*border-color:black;border-style:solid;border-width:1px;*/padding:4px 0px;}
+                .tg th{/*border-color:black;border-style:solid;border-width:1px;*/font-weight:normal;padding:4px 0px;}
+                .tdrp-row{font-size:12.5px;}
+                .arpNo{padding-left:23px;}
+            </style>
+        ';
+        
+        $html .= '
+            <body>
+                <table class="tg" style="undefined; width: 875px;">
+                    <colgroup>
+                        <col style="width: 143px">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td class="tg-0pky"><div class="fLayer">'.$rptInfo->serial_number.' '.$rptInfo->tax_type_menu.'</td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0pky"><div class="sLayer">'.strtoupper($rptInfo->municipality).', BENGUET</div></td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0pky">
+                                <div class="tLayer">
+                                    <span class="prevDate">'.Date('M j, Y', strtotime($rptInfo->prev_date)).'</span><span class="prevYear">'.$rptInfo->for_the_year.'</span><span class="reportDate">'.Date('F j, Y', strtotime($rptInfo->report_date)).'</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0pky">
+                                <div class="frLayer">
+                                    '.$rptInfo->first_name.' '.$rptInfo->middle_name.' '.$rptInfo->last_name.' <span class="numWords">'.$fractionDisplay.'</span> <span class="totalUp">'.$totalAmount.'</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0pky" style="height: 15%;">
+                                <span class="period">'.$period.'</span>
+                            </td>
+                        </tr>   
+                    </tbody>
+                </table>
+
+                <table class="" style="width:898px; position:relative; left:-13; padding-top: 40px;">
+                    <tbody>
+        ';
+
+        foreach ($tdrp as $row) {
+            if ($row->dsicount != 0.00) {
+                $payment = $row->discount;
+            } else if ($row->previous_year != 0.00) {
+                $payment = $row->previous_year;
+            } else if ($row->penalty_curr_year != 0.00) {
+                $payment = $row->penalty_curr_year;
+            } else if ($row->penalty_prev_year != 0.00) {
+                $payment = $row->penalty_prev_year;
+            }
+
+            $html .= '
+
+                        <tr>
+                            <td class="tdrp-row" style="width:16%">
+                                <div class="cols1">'.$row->declared_owner.'</div>
+                            </td>
+                            <td class="tdrp-row">
+                                <div class="cols bar">'.$row->barangay_name.'</div>
+                            </td>
+                            <td class="tdrp-row">
+                            </td>
+                            <td class="tdrp-row" style="width:20%;">
+                                <div class="cols arpNo">'.$row->td_arp_no.'</div>
+                            </td>
+                            <td class="tdrp-row"></td>
+                            <td class="tdrp-row"></td>
+                            <td class="tdrp-row" style="text-align:right">
+                                <div class="cols">'.$row->assessment_value.'</div>
+                            </td>
+                            <td class="tdrp-row" style="text-align:right">
+                                <div class="cols">'.$row->gross_amount.'</div>
+                            </td>
+                            <td class="tdrp-row" style="text-align:right">
+                                <div class="cols">BASIC</div>
+                            </td>
+                            <td class="tdrp-row">
+                                <div class="cols" style="text-align:right">'.$row->assessment_value.'</div>
+                            </td>
+                            <td class="tdrp-row" style="text-align:right">
+                                <div class="cols">('.$payment.')</div>
+                            </td>
+                            <td class="tdrp-row">
+                                <div class="cols net" style="text-align:right">'.$row->grand_total_net.'</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdrp-row"></td>
+                            <td class="tdrp-row"></td>
+                            <td class="tdrp-row"></td>
+                            <td class="tdrp-row"></td>
+                            <td class="tdrp-row"></td>
+                            <td class="tdrp-row"></td>
+                            <td class="tdrp-row"></td>
+                            <td class="tdrp-row" style="text-align:right">
+                            <div class="cols2">('.$row->period_covered.')</div>
+                            </td>
+                            <td class="tdrp-row" style="text-align:right">
+                                <div class="cols2">SEF</div>
+                            </td>
+                            <td class="tdrp-row" style="text-align:right">
+                                <div class="cols2">'.$row->assessment_value.'</div>
+                            </td>
+                            <td class="tdrp-row" style="text-align:right">
+                                <div class="cols2">('.$payment.')</div>
+                            </td>
+                            <td class="tdrp-row" style="text-align:right">
+                                <div class="cols2 net">'.$row->grand_total_net.'</div>
+                            </td>
+                        </tr>
+            ';
+        }
+
+        $html .= '
+                    </tbody>
+                </table>
+
+                <table class="tg">
+                    <tbody>
+                        <tr>
+                            <td class="tg-0pky">
+                                <div class="totalCash">'.$totalAmount.'</div> 
+        ';
+
+        if ($rptInfo->transaction_type == 1){//change class to totalCash 
+            $html .= '
+                                <div class="modeCash">'.$totalAmount.'</div>
+            ';
+        } else {
+            $html .= '
+                                <div class="modeCheck">'.$totalAmount.'</div>
+            ';
+        }
+
+        $html .= '
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0pky">
+                                <div class="signatoryLeft">
+                                    <div class="signatory1">MARY JANE P. LAMPACAN</div>
+                                    <div class="title1">Local Revenue Collection Officer IV</div>
+                                </div>
+
+                                <div class="signatoryRight">
+                                    <div class="signatory2">IMELDA I. MACANES</div>
+                                    <div class="title2">Provincial Treasurer</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0pky">
+                                <div class="total3">'.$totalAmount.'</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+        ';
+
+        
+
+       /* $html .= '
+                    </table>
+                </body>
+        ';*/
+
+                
+        $dompdf->loadHtml($html);
+        
+        // (Optional) Setup the paper size and orientation
+        $dompdf->setPaper(array(0,0,354.24,722.16), 'landscape');
 
         // Render the HTML as PDF
         $dompdf->render();
@@ -1153,8 +1559,6 @@ class PageController extends Controller
         ->join('customer_types', 'municipal_receipts.mun_client_type_id', 'customer_types.id')
         ->get();
 
-        $displayCustType = CustomerType::all();
-
         $displayOfficers = DB::table('cert_officers')
         ->select('cert_officers.*', 'officers.*', 'positions.*', 'departments.*', 'cert_officers.id')
         ->where('deleted_at', null)
@@ -1163,12 +1567,15 @@ class PageController extends Controller
         ->join('departments', 'cert_officers.department_id', 'departments.id')
         ->get();
 
+        $getTransactionType = RptMenu::select('id', 'transaction_type_menu')->where('transaction_type_menu', '!=', 'Cash')->where('transaction_type_menu', '<>', '')->get();
+        $getTaxType = RptMenu::select('id', 'tax_type_menu')->where('tax_type_menu', '!=', 'Collected by PTO')->where('tax_type_menu', '<>', '')->get();
         $acc_data = LandTaxAccount::where('info_id', $request->id)->get();
+        $currYear = date('Y');
 
         date_default_timezone_set("Asia/Hong_Kong");
         $current_date = date('m/d/Y H:i');
         
-        return view('pages.property_tax', ['current_date'=>$current_date, 'displayMunReceipts'=>$displayMunReceipts, 'displayCustType'=>$displayCustType, 'displayOfficers'=>$displayOfficers, 'acc_data'=>$acc_data]);
+        return view('pages.property_tax', ['current_date'=>$current_date, 'displayMunReceipts'=>$displayMunReceipts, 'displayOfficers'=>$displayOfficers, 'acc_data'=>$acc_data, 'getTransactionType'=>$getTransactionType,'getTaxType'=>$getTaxType, 'currYear'=>$currYear]);
     }
 
     /**
@@ -1202,6 +1609,8 @@ class PageController extends Controller
     public function permittees_sg()
     {
         $getPermittees = DB::table('sand_gravel_permittees')
+        ->leftJoin('municipalities', 'sand_gravel_permittees.permitted_area_municipality', 'municipalities.id')
+        ->leftJoin('barangays', 'sand_gravel_permittees.permitted_area_barangay', 'barangays.id')
         ->get();
         return view('pages.permittees_sg', ['getPermittees'=>$getPermittees]);
     }
@@ -1299,78 +1708,75 @@ class PageController extends Controller
      */
     public function cash_collections(Request $request)
     {
-        if (Auth::user()->office == "Cash") {
-            $displayCustType = CustomerType::all();
-            $ip = request()->ip();
-            $serials = DB::table('access_p_c_s')
-            ->select('serials.*', DB::raw('CONCAT(start_serial,"-", end_serial, " ", unit, " ", acc_category_settings) AS Serial'))
-            ->where('assigned_ip', $ip)
-            ->join('serials', 'access_p_c_s.serial_id', 'serials.id')
-            ->join('posts', 'serials.fund_id', 'posts.id')->orderBy('serial_id', 'desc')->limit(1)->get();
+        $displayCustType = CustomerType::all();
+        $ip = request()->ip();
+        $serials = DB::table('access_p_c_s')
+        ->select('serials.*', DB::raw('CONCAT(start_serial,"-", end_serial, " ", unit, " ", acc_category_settings) AS Serial'))
+        ->where('assigned_ip', $ip)
+        ->join('serials', 'access_p_c_s.serial_id', 'serials.id')
+        ->join('posts', 'serials.fund_id', 'posts.id')->orderBy('serial_id', 'desc')->limit(1)->get();
 
-            $displayCategories = DB::table('posts')->select(DB::raw('GROUP_CONCAT(acc_category_settings SEPARATOR ",") AS "ACC"'))->get();
-            $displayCategories = explode(",",$displayCategories[0]->ACC);
+        $displayCategories = DB::table('posts')->select(DB::raw('GROUP_CONCAT(acc_category_settings SEPARATOR ",") AS "ACC"'))->get();
+        $displayCategories = explode(",",$displayCategories[0]->ACC);
+        
+        $displayOfficers = DB::table('cert_officers')
+        ->select('cert_officers.*', 'officers.*', 'positions.*', 'departments.*', 'cert_officers.id')
+        ->where('deleted_at', null)
+        ->join('officers', 'cert_officers.officer_id', 'officers.id')
+        ->join('positions', 'cert_officers.position_id', 'positions.id')
+        ->join('departments', 'cert_officers.department_id', 'departments.id')
+        ->get();
+
+        //display officer for OPAG
+        $displayOfficersOPAG = DB::table('cert_officers')
+        ->select('cert_officers.*', 'officers.*', 'positions.*', 'departments.*', 'cert_officers.id')
+        ->where('department', 'OPAG')
+        ->join('officers', 'cert_officers.officer_id', 'officers.id')
+        ->join('positions', 'cert_officers.position_id', 'positions.id')
+        ->join('departments', 'cert_officers.department_id', 'departments.id')
+        ->get();
+
+        //display officer for PVET
+        $displayOfficersPVET = DB::table('cert_officers')
+        ->select('cert_officers.*', 'officers.*', 'positions.*', 'departments.*', 'cert_officers.id')
+        ->where('department', 'PVET')
+        ->join('officers', 'cert_officers.officer_id', 'officers.id')
+        ->join('positions', 'cert_officers.position_id', 'positions.id')
+        ->join('departments', 'cert_officers.department_id', 'departments.id')
+        ->get();
+
+        //display officer for PHO
+        $displayOfficersPHO= DB::table('cert_officers')
+        ->select('cert_officers.*', 'officers.*', 'positions.*', 'departments.*', 'cert_officers.id')
+        ->where('department', 'PHO')
+        ->join('officers', 'cert_officers.officer_id', 'officers.id')
+        ->join('positions', 'cert_officers.position_id', 'positions.id')
+        ->join('departments', 'cert_officers.department_id', 'departments.id')
+        ->get();
+
+        //display officer for District Hospitals
+        $displayOfficersDH= DB::table('cert_officers')
+        ->select('cert_officers.*', 'officers.*', 'positions.*', 'departments.*', 'cert_officers.id')
+        ->where([['department', 'ADH'], ['cert_officers.officer_id', 26]])
+        ->orWhere([['department', 'DMDH'], ['cert_officers.officer_id', 30]])
+        ->orWhere([['department', 'IDH'], ['cert_officers.officer_id', 33]])
+        ->orWhere([['department', 'KDH'], ['cert_officers.officer_id', 35]])
+        ->orWhere([['department', 'NBDH'], ['cert_officers.officer_id', 36]])
+        ->join('officers', 'cert_officers.officer_id', 'officers.id')
+        ->join('positions', 'cert_officers.position_id', 'positions.id')
+        ->join('departments', 'cert_officers.department_id', 'departments.id')
+        ->get();
             
-            $displayOfficers = DB::table('cert_officers')
-            ->select('cert_officers.*', 'officers.*', 'positions.*', 'departments.*', 'cert_officers.id')
-            ->where('deleted_at', null)
-            ->join('officers', 'cert_officers.officer_id', 'officers.id')
-            ->join('positions', 'cert_officers.position_id', 'positions.id')
-            ->join('departments', 'cert_officers.department_id', 'departments.id')
-            ->get();
+        $acc_data = LandTaxAccount::where('info_id', $request->id)->get();
+        
+        date_default_timezone_set("Asia/Hong_Kong");
+        $current_date = date('m/d/Y H:i');
 
-            //display officer for OPAG
-            $displayOfficersOPAG = DB::table('cert_officers')
-            ->select('cert_officers.*', 'officers.*', 'positions.*', 'departments.*', 'cert_officers.id')
-            ->where('department', 'OPAG')
-            ->join('officers', 'cert_officers.officer_id', 'officers.id')
-            ->join('positions', 'cert_officers.position_id', 'positions.id')
-            ->join('departments', 'cert_officers.department_id', 'departments.id')
-            ->get();
-
-            //display officer for PVET
-            $displayOfficersPVET = DB::table('cert_officers')
-            ->select('cert_officers.*', 'officers.*', 'positions.*', 'departments.*', 'cert_officers.id')
-            ->where('department', 'PVET')
-            ->join('officers', 'cert_officers.officer_id', 'officers.id')
-            ->join('positions', 'cert_officers.position_id', 'positions.id')
-            ->join('departments', 'cert_officers.department_id', 'departments.id')
-            ->get();
-
-            //display officer for PHO
-            $displayOfficersPHO= DB::table('cert_officers')
-            ->select('cert_officers.*', 'officers.*', 'positions.*', 'departments.*', 'cert_officers.id')
-            ->where('department', 'PHO')
-            ->join('officers', 'cert_officers.officer_id', 'officers.id')
-            ->join('positions', 'cert_officers.position_id', 'positions.id')
-            ->join('departments', 'cert_officers.department_id', 'departments.id')
-            ->get();
-
-            //display officer for District Hospitals
-            $displayOfficersDH= DB::table('cert_officers')
-            ->select('cert_officers.*', 'officers.*', 'positions.*', 'departments.*', 'cert_officers.id')
-            ->where([['department', 'ADH'], ['cert_officers.officer_id', 26]])
-            ->orWhere([['department', 'DMDH'], ['cert_officers.officer_id', 30]])
-            ->orWhere([['department', 'IDH'], ['cert_officers.officer_id', 33]])
-            ->orWhere([['department', 'KDH'], ['cert_officers.officer_id', 35]])
-            ->orWhere([['department', 'NBDH'], ['cert_officers.officer_id', 36]])
-            ->join('officers', 'cert_officers.officer_id', 'officers.id')
-            ->join('positions', 'cert_officers.position_id', 'positions.id')
-            ->join('departments', 'cert_officers.department_id', 'departments.id')
-            ->get();
-                
-            $acc_data = LandTaxAccount::where('info_id', $request->id)->get();
-            
-            date_default_timezone_set("Asia/Hong_Kong");
-            $current_date = date('m/d/Y H:i');
-
-            // if (count($serials) < 1) {
-            //     return abort(403,'Oops! your unit is not assigned to a series.');
-            // }
-            return view('pages.cash_collections', ['ip'=>$ip, 'current_date'=>$current_date, 'acc_data'=>$acc_data, 'displayCategories'=>$displayCategories, 'serials'=>$serials, 'displayCustType'=>$displayCustType, 'displayOfficers'=>$displayOfficers, 'displayOfficersOPAG'=>$displayOfficersOPAG, 'displayOfficersPVET'=>$displayOfficersPVET, 'displayOfficersPHO'=>$displayOfficersPHO, 'displayOfficersDH'=>$displayOfficersDH]);
-        } else {
-            return abort(403, 'No Authorization to Access this page!');
-        }
+        // if (count($serials) < 1) {
+        //     return abort(403,'Oops! your unit is not assigned to a series.');
+        // }
+        return view('pages.cash_collections', ['ip'=>$ip, 'current_date'=>$current_date, 'acc_data'=>$acc_data, 'displayCategories'=>$displayCategories, 'serials'=>$serials, 'displayCustType'=>$displayCustType, 'displayOfficers'=>$displayOfficers, 'displayOfficersOPAG'=>$displayOfficersOPAG, 'displayOfficersPVET'=>$displayOfficersPVET, 'displayOfficersPHO'=>$displayOfficersPHO, 'displayOfficersDH'=>$displayOfficersDH]);
+        
         
     }
 
@@ -1521,5 +1927,15 @@ class PageController extends Controller
         ->get();
 
         return view('pages.account_access', ['rateChange'=>$rateChange, 'accCategories'=>$accCategories, 'accGroups'=>$accGroups, 'accTitles'=>$accTitles, 'accSubtitles'=>$accSubtitles, 'accSubSubtitles'=>$accSubSubtitles]);
+    }
+
+     /**
+     * Display SEF RPT page
+     *
+     * @return \Illuminate\View\View
+     */
+    public function property_tax_sef()
+    {
+        return view('pages.property_tax_sef');
     }
 }

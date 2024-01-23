@@ -1520,7 +1520,7 @@ class sgMonthlyController extends Controller
         $worksheet->getStyle('E10:G'.($row+3))
             ->getNumberFormat()
             ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
-
+            
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
         $writer->save(public_path('storage/ReportsTemplate/SandAndGravelMonthlyReport.xlsx'));
         return response()->download(public_path('storage/ReportsTemplate/SandAndGravelMonthlyReport.xlsx'))->DeleteFileAfterSend(true);

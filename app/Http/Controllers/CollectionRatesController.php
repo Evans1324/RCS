@@ -72,7 +72,9 @@ class CollectionRatesController extends Controller
     }
 
     function getCollData(Request $request) {
-        $displayCollData = LandTaxInfo::with('parentSerial', 'getNature', 'parentAccessPc', 'parentMunicipality', 'parentBarangay')->where([['land_tax_infos.deleted_at', null], ['land_tax_infos.id', $request->id]])->first();
+        $displayCollData = LandTaxInfo::with('parentSerial', 'getNature', 'parentAccessPc', 'parentMunicipality', 'parentBarangay')
+        ->where([['land_tax_infos.deleted_at', null], ['land_tax_infos.id', $request->id]])
+        ->first();
         // dd($displayCollData);
         // $displayCollData = DB::table('land_tax_infos')
         // ->select('land_tax_infos.id AS main_id', 'land_tax_infos.*', 'serials.*', 'access_p_c_s.*', 'access_p_c_s.id AS user_name', 'land_tax_accounts.*')

@@ -41,6 +41,8 @@ use App\Http\Controllers\AccountSubSubtitlesController;
 use App\Http\Controllers\AccountsReceivableController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\BankDetailsController;
+use App\Http\Controllers\AccountAccessController;
+use App\Http\Controllers\RealPropertyTaxController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -101,6 +103,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('accounts_receivable', ['as' => 'pages.accounts_receivable', 'uses' => 'App\Http\Controllers\PageController@accounts_receivable']);
 	Route::get('memo', ['as' => 'pages.memo', 'uses' => 'App\Http\Controllers\PageController@memo']);
 	Route::get('account_access', ['as' => 'pages.account_access', 'uses' => 'App\Http\Controllers\PageController@account_access']);
+	Route::get('property_tax_sef', ['as' => 'pages.property_tax_sef', 'uses' => 'App\Http\Controllers\PageController@property_tax_sef']);
 }); 
 
 Route::group(['middleware' => 'auth'], function () {
@@ -147,11 +150,15 @@ Route::post('getTitleRate', [CollectionRatesController::class, 'getTitleRate'])-
 Route::post('getSubtitleRate', [CollectionRatesController::class, 'getSubtitleRate'])->name('getSubtitleRate');
 
 Route::post('submit_collection_rate', [RateChangeController::class, 'submitRateChange'])->name('submit_collection_rate');
+Route::post('accountAccessForm', [RateChangeController::class, 'accountAccessForm'])->name('accountAccessForm');
+Route::post('getActiveAccounts', [RateChangeController::class, 'getActiveAccounts'])->name('getActiveAccounts');
 
 Route::post('submit_serial_form', [SerialController::class, 'insertSerialData'])->name('submit_serial_form');
 Route::post('delete_serial_form', [SerialController::class, 'deleteSerialData'])->name('delete_serial_form');
 Route::post('getCurrentSerial', [SerialController::class, 'getCurrentSerial'])->name('getCurrentSerial');
 Route::post('getCurrentSerialCash', [SerialController::class, 'getCurrentSerialCash'])->name('getCurrentSerialCash');
+Route::post('getSeriesRPT', [SerialController::class, 'getSeriesRPT'])->name('getSeriesRPT');
+Route::post('getSeriesSEF', [SerialController::class, 'getSeriesSEF'])->name('getSeriesSEF');
 Route::post('updateSerialStatus', [SerialController::class, 'updateSerialStatus'])->name('updateSerialStatus');
 
 Route::post('submit_serial_sg_form', [SerialSGController::class, 'insertSerialSGData'])->name('submit_serial_sg_form');
@@ -193,6 +200,7 @@ Route::post('saveYearSelected', [CollectionRatesController::class, 'saveYearSele
 
 Route::get('getWordTemplate/{id}', [PageController::class, 'getWordTemplate', 'as'=>'id'])->name('getWordTemplate');
 Route::get('printReceipt/{id}', [PageController::class, 'printReceipt', 'as'=>'id'])->name('printReceipt');
+Route::get('printReceiptRPT/{id}', [PageController::class, 'printReceiptRPT', 'as'=>'id'])->name('printReceiptRPT');
 Route::get('printCollectionsDeposits/{id}', [PageController::class, 'printCollectionsDeposits', 'as'=>'id'])->name('printCollectionsDeposits');
 
 Route::post('cert_form', [CertificationController::class, 'insertCertData'])->name('cert_form');
@@ -274,3 +282,21 @@ Route::post('getMemoTransactionData', [MemoController::class, 'getMemoTransactio
 
 Route::post('check_form', [BankDetailsController::class, 'insertCheck'])->name('check_form');
 Route::post('viewCheckDetails', [BankDetailsController::class, 'viewCheckDetails'])->name('viewCheckDetails');
+
+Route::post('rptSumbmitForm', [RealPropertyTaxController::class, 'rptSumbmitForm'])->name('rptSumbmitForm');
+Route::post('rptSubmitFormSEF', [RealPropertyTaxController::class, 'rptSubmitFormSEF'])->name('rptSubmitFormSEF');
+Route::post('getAccountTitlesSEF', [RealPropertyTaxController::class, 'getAccountTitlesSEF'])->name('getAccountTitlesSEF');
+Route::post('getSEFTransactionData', [RealPropertyTaxController::class, 'getSEFTransactionData'])->name('getSEFTransactionData');
+Route::post('getReceiptRPTData', [RealPropertyTaxController::class, 'getReceiptRPTData'])->name('getReceiptRPTData');
+Route::post('deleteDataSEF', [RealPropertyTaxController::class, 'deleteDataSEF'])->name('deleteDataSEF');
+Route::post('cancelDataSEF', [RealPropertyTaxController::class, 'cancelDataSEF'])->name('cancelDataSEF');
+Route::post('restoreDataSEF', [RealPropertyTaxController::class, 'restoreDataSEF'])->name('restoreDataSEF');
+Route::post('getBarangaysOnly', [RealPropertyTaxController::class, 'getBarangaysOnly'])->name('getBarangaysOnly');
+Route::post('getClassification', [RealPropertyTaxController::class, 'getClassification'])->name('getClassification');
+Route::post('getFullPartial', [RealPropertyTaxController::class, 'getFullPartial'])->name('getFullPartial');
+Route::post('updateSeriesStatusSEF', [RealPropertyTaxController::class, 'updateSeriesStatusSEF'])->name('updateSeriesStatusSEF');
+Route::post('getRPTData', [RealPropertyTaxController::class, 'getRPTData'])->name('getRPTData');
+Route::post('deleteDataRPT', [RealPropertyTaxController::class, 'deleteDataRPT'])->name('deleteDataRPT');
+Route::post('cancelDataRPT', [RealPropertyTaxController::class, 'cancelDataRPT'])->name('cancelDataRPT');
+Route::post('restoreDataRPT', [RealPropertyTaxController::class, 'restoreDataRPT'])->name('restoreDataRPT');
+Route::post('openRPTReceipt', [RealPropertyTaxController::class, 'openRPTReceipt'])->name('openRPTReceipt');

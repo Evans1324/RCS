@@ -15,9 +15,18 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label for="inputEffectivityYear">EFFECTIVITY YEAR</label>
-                                        <input type="text" name="inputEffectivityYear"
-                                            class="yearpicker form-control mb-0 bg-white text-dark"
-                                            id="inputEffectivityYear" value="{{ old('inputEffectivityYear') }}">
+                                        <label for="sgYear">Year</label>
+                                        <?php 
+                                            $year_start  = 1940;
+                                            $year_end = date('Y');
+                                            $user_selected_year = date('Y');
+                                            echo '<select class="form-control bg-white text-dark" name="inputEffectivityYear" id="inputEffectivityYear">'."\n";
+                                            for ($i_year = $year_start; $i_year <= $year_end; $i_year++) {
+                                                $selected = ($user_selected_year == $i_year ? ' selected' : '');
+                                                echo '<option value="'.$i_year.'"'.$selected.'>'.$i_year.'</option>'."\n";
+                                            }
+                                            echo '</select>'."\n";
+                                        ?>
                                         <label class="text-danger">
                                             @error('inputEffectivityYear')
                                                 {{ $message }}
@@ -28,8 +37,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label for="inputTaxPercentage">TAX PERCENTAGE TO BE COLLECTED</label>
-                                        <input type="text" name="inputTaxPercentage"
-                                            class="form-control mb-0 bg-white text-dark" id="inputTaxPercentage"
+                                        <input type="text" name="inputTaxPercentage" class="decimalFormat form-control mb-0 bg-white text-dark" id="inputTaxPercentage"
                                             value="{{ old('inputTaxPercentage') }}">
                                         <label class="text-danger">
                                             @error('inputTaxPercentage')
@@ -41,7 +49,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label for="inputAidFull">ADVANCED PAYMENT DISCOUNT</label>
-                                        <input type="text" name="inputAidFull" class="form-control mb-0 bg-white text-dark"
+                                        <input type="text" name="inputAidFull" class="decimalFormat form-control mb-0 bg-white text-dark"
                                             id="inputAidFull" value="{{ old('inputAidFull') }}">
                                         <label class="text-danger">
                                             @error('inputAidFull')
@@ -53,7 +61,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label for="inputPaidFull">PROMPT PAYMENT DISCOUNT</label>
-                                        <input type="text" name="inputPaidFull" class="form-control mb-0 bg-white text-dark"
+                                        <input type="text" name="inputPaidFull" class="decimalFormat form-control mb-0 bg-white text-dark"
                                             id="inputPaidFull" value="{{ old('inputPaidFull') }}">
                                         <label class="text-danger">
                                             @error('inputPaidFull')
@@ -65,8 +73,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label for="inputPenaltyPerMonth">PENALTY PER MONTH</label>
-                                        <input type="text" name="inputPenaltyPerMonth"
-                                            class="form-control mb-0 bg-white text-dark" id="inputPenaltyPerMonth"
+                                        <input type="text" name="inputPenaltyPerMonth" class="decimalFormat form-control mb-0 bg-white text-dark" id="inputPenaltyPerMonth"
                                             value="{{ old('inputPenaltyPerMonth') }}">
                                         <label class="text-danger">
                                             @error('inputPenaltyPerMonth')
@@ -77,8 +84,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 d-flex justify-content-center">
-                                        <button type="button" id="updateForm56" class="update-btn btn btn-success">Update
-                                            Form</button>
+                                        <button type="button" id="updateForm56" class="update-btn btn btn-success">Update Form</button>
                                     </div>
                                 </div>
                             </div>
@@ -151,18 +157,9 @@
             });
         });
 
-        $(".yearpicker").datepicker({
-            format: 'yyyy',
-            viewMode: "years",
-            minViewMode: "years",
-            autoclose: true
-        });
-
         let oldInputs = @json(count(Session::getOldInput()));
-        
         if (oldInputs == 0) {
             let form56Input = @json($form56);
-            console.log(form56Input);
             $('#inputEffectivityYear').val(form56Input.effectivity_year);
             $('#inputTaxPercentage').val(form56Input.tax_precentage);
             $('#inputAidFull').val(form56Input.aid_in_full);
@@ -170,7 +167,6 @@
             $('#inputPenaltyPerMonth').val(form56Input.penalty_per_month);
         }
         
-
         $('#updateForm56').on('click', function(e) {
             let $form = $(this);
             Swal.fire({
@@ -189,6 +185,8 @@
             })
         });
 
-        console.log(oldInputs);
+        $('.decimalFormat').keyup(function() {
+            $(this).mask("#00,000,000,000,000.00", {reverse: true});
+        });
     </script>
 @endsection

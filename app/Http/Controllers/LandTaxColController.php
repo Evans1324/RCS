@@ -508,7 +508,8 @@ class LandTaxColController extends Controller
         $info = $landTaxData::where('serial_number', $serialNumber)->first();
         $land_tax_reset = new LandTaxAccount;
         $land_tax_reset::where('info_id', $info->id)->delete();
-        
+        $typeArray = $request->transactType;
+        $splitArray = explode(',', $typeArray);
         for($i=0; $i<count($request->taxColAccount); $i++) {
             if ($request->taxColNature[$i] == null) {
                 $cmp = true;
@@ -536,13 +537,14 @@ class LandTaxColController extends Controller
             $landTaxAccount->acc_title_id = $acc_title_id;
             $landTaxAccount->sub_title_id = $acc_subtitle_id;
             $landTaxAccount->nature = $request->taxColNature[$i];
+            
             if ($request->taxColTransaction == "Cash & Check") {
-                if ($request->cashRowTrans != null && isset($request->cashRowTrans[$i]) && $request->cashRowTrans[$i] == 'Cash') {
+                if ($splitArray[$i] == "Cash") {
                     $landTaxAccount->cash = "on";
                 } else {
                     $landTaxAccount->check = "on";
                 }
-            } 
+            }
             $landTaxAccount->amount = str_replace(',', '', $request->taxColAmount[$i]);
             $landTaxAccount->save();
         }
@@ -617,7 +619,7 @@ class LandTaxColController extends Controller
         if ($request->id == 'Land Tax Collection') {
             $serials = DB::table('access_p_c_s')
             ->select('serials.*', 'land_tax_infos.serial_number', DB::raw('CONCAT(start_serial,"-", end_serial, " ", unit, " ", acc_category_settings) AS Serial'))
-            ->where([['assigned_ip', $ip], ['process_type', 'Land Tax Collection'], ['serials.status', 'Active'], ['unit', 'Continuous']])
+            ->where([['assigned_ip', $ip], ['process_type', 'Land Tax Collection'], ['serials.status', 'Active'], ['form', 'Form 51'], ['unit', 'Continuous']])
             ->join('serials', 'access_p_c_s.serial_id', 'serials.id')
             ->join('posts', 'serials.fund_id', 'posts.id')
             ->leftJoin('land_tax_infos', 'land_tax_infos.user_ip', 'access_p_c_s.id')
@@ -626,7 +628,7 @@ class LandTaxColController extends Controller
         } else {
             $serials = DB::table('serials')
             ->select('serials.*', 'land_tax_infos.serial_number', DB::raw('CONCAT(start_serial,"-", end_serial, " ", unit, " ", acc_category_settings) AS Serial'))
-            ->where([['unit', 'Pad'], ['serials.status', 'Active']])
+            ->where([['unit', 'Pad'], ['form', 'Form 51'], ['serials.status', 'Active']])
             ->whereNull('serials.assigned_office')
             ->join('posts', 'serials.fund_id', 'posts.id')
             ->leftJoin('land_tax_infos', 'land_tax_infos.series_id', 'serials.id')
@@ -667,9 +669,10 @@ class LandTaxColController extends Controller
     
     public function getSeriesCash(Request $request) {
         $ip = request()->ip();
+        
         if ($request->id == 'Field Land Tax Collection Cash') {
             $serials = DB::table('serials')
-            ->select('serials.*', 'land_tax_infos.serial_number', DB::raw('CONCAT(start_serial,"-", end_serial, " ", unit, " ", acc_category_settings) AS Serial'))
+            ->select('serials.*', 'land_tax_infos.serial_number', DB::raw('CONCAT(start_serial,"-", end_serial, " ", unit, " ", acc_category_settings) AS Serial'))         
             ->where([['unit', 'Pad'], ['serials.assigned_office', 'Cash'], ['serials.status', 'Active']])
             ->leftJoin('posts', 'serials.fund_id', 'posts.id')
             ->leftJoin('land_tax_infos', 'land_tax_infos.series_id', 'serials.id')
@@ -685,7 +688,8 @@ class LandTaxColController extends Controller
         ->first();
         
         $previousSerial = LandTaxInfo::select('start_serial', 'serial_number', 'assigned_office')
-        ->where('assigned_office', 'Cash')   
+        ->where('assigned_office', 'Cash')
+        ->where('serial_number', '<>', null)
         ->orderBy('land_tax_infos.id', 'desc')
         ->leftJoin('serials', 'land_tax_infos.series_id', 'serials.id')
         ->first();
@@ -748,7 +752,7 @@ class LandTaxColController extends Controller
         $columns=$request->input('columns');
 
         $query = DB::table('land_tax_infos')
-        ->select('land_tax_infos.id AS main_id', 'rentals.*', 'serials.*', 'access_p_c_s.*', 'access_p_c_s.id AS user_name', 'serial_s_g_s.*', 'municipalities.municipality AS mun_name', 'barangays.barangay_name AS bar_name', 'customer_types.*', 'customer_types.description_type AS client_types', 'land_tax_infos.*', 'land_tax_infos.status', 'land_tax_infos.created_at AS order')
+        ->select('land_tax_infos.id AS main_id', 'bank_details.id AS bd_id', 'rentals.*', 'serials.*', 'access_p_c_s.*', 'access_p_c_s.id AS user_name', 'serial_s_g_s.*', 'municipalities.municipality AS mun_name', 'barangays.barangay_name AS bar_name', 'customer_types.*', 'customer_types.description_type AS client_types', 'land_tax_infos.*', 'land_tax_infos.status', 'land_tax_infos.created_at AS order')
         ->where('land_tax_infos.submission_type', 'Revenue Collection')
         ->join('serials', 'land_tax_infos.series_id', 'serials.id')
         ->leftJoin('access_p_c_s', 'land_tax_infos.user_ip', 'access_p_c_s.id')
@@ -756,7 +760,9 @@ class LandTaxColController extends Controller
         ->leftJoin('barangays', 'land_tax_infos.barangay_id', 'barangays.id')
         ->leftJoin('customer_types', 'land_tax_infos.client_type_id', 'customer_types.id')
         ->leftJoin('serial_s_g_s', 'land_tax_infos.dr_id', 'serial_s_g_s.id')
-        ->leftJoin('rentals', 'land_tax_infos.lot_rental_id', 'rentals.id');
+        ->leftJoin('rentals', 'land_tax_infos.lot_rental_id', 'rentals.id')
+        ->leftJoin('bank_details', 'land_tax_infos.id', 'bank_details.bank_id')
+        ->groupBy('land_tax_infos.id');
 
         if($search!=null){
             $query=$query
@@ -778,10 +784,10 @@ class LandTaxColController extends Controller
             ->orWhere([['land_tax_infos.deleted_at', null],['customer_types.description_type','like','%'.$search.'%'], ['land_tax_infos.submission_type', 'Revenue Collection']])
             ->orWhere([['land_tax_infos.deleted_at', null],['sex','like','%'.$search.'%'], ['land_tax_infos.submission_type', 'Revenue Collection']])
             ->orWhere([['land_tax_infos.deleted_at', null],['transact_type','like','%'.$search.'%'], ['land_tax_infos.submission_type', 'Revenue Collection']])
-            ->orWhere([['land_tax_infos.deleted_at', null],['bank_name','like','%'.$search.'%'], ['land_tax_infos.submission_type', 'Revenue Collection']])
+            ->orWhere([['land_tax_infos.deleted_at', null],['land_tax_infos.bank_name','like','%'.$search.'%'], ['land_tax_infos.submission_type', 'Revenue Collection']])
             ->orWhere([['land_tax_infos.deleted_at', null],['number','like','%'.$search.'%'], ['land_tax_infos.submission_type', 'Revenue Collection']])
             ->orWhere([['land_tax_infos.deleted_at', null],['transact_date','like','%'.$search.'%'], ['land_tax_infos.submission_type', 'Revenue Collection']])
-            ->orWhere([['land_tax_infos.deleted_at', null],['bank_remarks','like','%'.$search.'%'], ['land_tax_infos.submission_type', 'Revenue Collection']])
+            ->orWhere([['land_tax_infos.deleted_at', null],['land_tax_infos.bank_remarks','like','%'.$search.'%'], ['land_tax_infos.submission_type', 'Revenue Collection']])
             ->orWhere([['land_tax_infos.deleted_at', null],['receipt_remarks','like','%'.$search.'%'], ['land_tax_infos.submission_type', 'Revenue Collection']])
             ->orWhere([['land_tax_infos.deleted_at', null],['owner','like','%'.$search.'%'], ['land_tax_infos.submission_type', 'Revenue Collection']])
             ->orWhere([['land_tax_infos.deleted_at', null],['spouses','like','%'.$search.'%'], ['land_tax_infos.submission_type', 'Revenue Collection']])

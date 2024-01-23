@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\DB;
 class BankDetailsController extends Controller
 {
     public function insertCheck (Request $request) {
-        $check = BankDetails::where('bank_number', $request->taxColRowNumber)->first();
+        $check = BankDetails::where('id', $request->bankID)->first();
+        // dd($request->bankRowId.' - '.$request->serailNumReference);
         if ($check) {
             $bank = BankDetails::find($check->id);
             $bank->bank_id = $request->bankRowId;
@@ -23,6 +24,7 @@ class BankDetailsController extends Controller
         } else {
             $bank = new BankDetails;
             $bank->bank_name = $request->taxColRowBank; 
+            $bank->bank_id = $request->bankRowId;
             $bank->bank_number = $request->taxColRowNumber;
             $bank->bank_date = date('Y-m-d', strtotime($request->taxColRowTransactDate));
             $bank->bank_remarks = $request->bankRemarks;
@@ -42,7 +44,7 @@ class BankDetailsController extends Controller
     }
 
     function viewCheckDetails(Request $request) {
-        // dd($request);
+        
         if ($request->checkStat == 'Check') {
             // dd(1);
             if ($request->dRowID == 0) {
@@ -63,11 +65,13 @@ class BankDetailsController extends Controller
             }
         } else {
             // dd(4);
-            $checkRow = BankDetails::where('info_id', $request->dRow)
+            $checkRow = BankDetails::select('bank_details.id AS b_id', 'bank_details.*', 'land_tax_accounts.*')
+            ->where('info_id', $request->dRow)
             ->orWhere('serial_ref', $request->serial)
             ->leftJoin('land_tax_accounts', 'bank_details.bank_id', 'land_tax_accounts.info_id')
             ->groupBy('bank_details.id')
-            ->get();
+            ->get()
+            ->skip(0);
         }
         
         return [$checkRow, $request->dRowID, $request->serial];

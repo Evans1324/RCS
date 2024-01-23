@@ -385,6 +385,7 @@ class CashCollectionsController extends Controller
             ->orWhereRaw('title_name = "Interest Income (General Fund-Proper)"')
             ->orWhereRaw('title_name = "Special Education Fund"')
             ->leftJoin('collection_rates', 'collection_rates.acc_titles_id', 'account_titles.id')
+            ->groupBy('account_titles.id')
             ->get();
         }
         //  else {
@@ -406,6 +407,7 @@ class CashCollectionsController extends Controller
         ->leftJoin('collection_rates', 'collection_rates.acc_subtitles_id', 'account_subtitles.id')
         ->where('office_code', 'CASH')
         ->orderBy('subtitle')
+        ->groupBy('account_subtitles.id')
         ->limit(5)
         ->get();
         
